@@ -64,8 +64,16 @@ export const { auth, handlers, signIn, signOut }
                 session.user.id = token.sub;
             }
 
-            if (token.sub && session.user){
+            // if (token.sub && session.user){
+            //     session.user.role = token.role as UserRole;
+            // }
+
+            if (token.role && session.user){
                 session.user.role = token.role as UserRole;
+            }
+
+            if (session.user){
+                session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
             }
             return session;
         },
@@ -78,6 +86,7 @@ export const { auth, handlers, signIn, signOut }
             if (!existingUser) return token;
 
             token.role = existingUser.role;
+            token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
 
             return token;
           }

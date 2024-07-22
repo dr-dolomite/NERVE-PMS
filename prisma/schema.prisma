@@ -103,3 +103,12 @@ model Patient {
   referredBy  String
   updatedAt   DateTime @updatedAt
 }
+
+// QUEUING SYSTEM PROTOTYPE
+
+model QueueNumber {
+  id         String   @id @default(cuid())
+  spotNumber Int      @default(autoincrement())
+  name       String
+  updatedAt  DateTime @updatedAt
+}

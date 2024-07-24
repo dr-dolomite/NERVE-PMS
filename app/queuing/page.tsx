@@ -18,7 +18,7 @@ export default async function Queue() {
       <div className="mb-4">
         <Link
           href="/queuing/post/create"
-          className="bg-white px-4 py-2 rounded"
+          className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
         >
           Create Queue Number
         </Link>
@@ -51,7 +51,7 @@ export default async function Queue() {
                 href={`/queuing/post/${currentPatient.id}/edit`}
                 className=""
               >
-                <h2 className={`mb-3 text-2xl font-semibold`}>
+                <h2 className={`mt-4 px-4 py-2 bg-blue-500 text-white rounded`}>
                   UPDATE PATIENT
                 </h2>
               </Link>
@@ -59,6 +59,12 @@ export default async function Queue() {
           );
         })}
       </div>
+      <Link
+        href="/queuing/now_serving"
+        className="mt-24 px-4 py-2 bg-amber-500 text-white rounded"
+      >
+        Redirect to Now Serving
+      </Link>
     </main>
   );
 }

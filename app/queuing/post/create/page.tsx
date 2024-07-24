@@ -11,6 +11,7 @@ export default function PostsCreate() {
           formAction={createPost}
           initialData={{
             name: "",
+            spotNumber: 0,
           }}
         />
       </div>

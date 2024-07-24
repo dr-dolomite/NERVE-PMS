@@ -1,11 +1,12 @@
 "use client"; // Mark this component as a client component
-
+import Link from "next/link";
 import React, { useState } from "react";
 
 interface Patient {
   id: string;
   name: string;
   spotNumber: number; // Ensure this field name is correct
+  status: string;
 }
 
 interface NowServingClientProps {
@@ -41,17 +42,48 @@ const NowServingClient: React.FC<NowServingClientProps> = ({
               Patient Queue Number:{" "}
               {currentPatient ? currentPatient.spotNumber : "----"}
             </p>
+
+            <p className={`mb-3 text-xl font-normal`}>
+              Patient Status: {currentPatient ? currentPatient.status : "----"}
+            </p>
+
+            <select
+              id="status"
+              name="status"
+              // defaultValue={currentPatient.status}
+              className="rounded p-2 w-full"
+            >
+              <option value="pending">pending</option>
+              <option value="finished">finished checkup</option>
+            </select>
           </div>
         </div>
       </div>
-      {currentIndex === null || currentIndex < currentPatients.length - 1 ? (
+
+      <div className="flex flex-row space-x-14">
+        {currentIndex === null || currentIndex < currentPatients.length - 1 ? (
+          <button
+            onClick={handleNextPatient}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            Next Patient
+          </button>
+        ) : null}
+
         <button
-          onClick={handleNextPatient}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          onClick={() => console.log("Click is working")}
+          className="mt-4 px-4 py-2 bg-slate-500 text-white rounded"
         >
-          Next Patient
+          Notify
         </button>
-      ) : null}
+      </div>
+
+      <Link
+        href="/queuing"
+        className="mt-24 px-4 py-2 bg-amber-500 text-white rounded"
+      >
+        Redirect to Now Serving
+      </Link>
     </main>
   );
 };

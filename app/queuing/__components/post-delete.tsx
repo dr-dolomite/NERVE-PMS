@@ -23,7 +23,7 @@ export default function PostDelete({ id }: PostDeleteProps) {
   // and the deleteAction is performed.
   return (
     <form onSubmit={deleteAction}>
-      <button type="submit" className="text-sm text-red-500">
+      <button type="submit" className="mt-4 px-4 py-2 bg-red-500 text-white rounded">
         Delete
       </button>
     </form>

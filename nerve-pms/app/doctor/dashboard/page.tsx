@@ -16,6 +16,7 @@ import {
   AvatarFallback,
   AvatarImage
 } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button";
 
 
 const Dashboard = () => {
@@ -159,18 +160,6 @@ const Dashboard = () => {
             </div>
           </div>
         </Card>
-        {/* <Card x-chunk="dashboard-01-chunk-3">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
-          </CardContent>
-        </Card> */}
       </div>
 
       <div className="lg:mt-6 mt-4">
@@ -178,9 +167,9 @@ const Dashboard = () => {
           Current Patient
         </h1>
         <Card x-chunk="dashboard-01-chunk-3" className="rounded-xl bg-white p-6 pt-8" >
-          <CardContent className="grid grid-cols-4 gap-4">
-            <div className="grid grid-cols-1 gap-6">
-              <div className="flex items-center gap-4">
+          <CardContent className="2xl:grid 2xl:grid-cols-4 2xl:grid-flow-row flex flex-col gap-y-12 gap-6">
+            <div className="2xl:grid 2xl:grid-rows-5 2xl:grid-flow-col 2xl:col-span-1 flex flex-col 2xl:gap-4 gap-8">
+              <div className="flex items-center gap-4 2xl:row-span-1">
                 <Avatar className="hidden h-20 w-20 sm:flex">
                   <AvatarImage src="/avatars/01.png" alt="Avatar" />
                   <AvatarFallback>
@@ -188,7 +177,7 @@ const Dashboard = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
-                  <p className="2xl:text-xl text-lg font-medium leading-none">
+                  <p className="xl:text-2xl text-xl font-bold leading-none">
                     Olivia Martin
                   </p>
                   <p className="text-md text-muted-foreground">
@@ -197,38 +186,23 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-md mt-6">
-                <ul className="text-dark-blue font-semibold text-md xl:leading-8 leading-6">
-                  <li>Age:</li>
-                  <li>Sex:</li>
-                  <li>City:</li>
-                  <li>Birthday:</li>
-                  <li>Civil Status:</li>
-                  <li>Occupation:</li>
-                  <li>Handedness:</li>
-                  <li>Religion:</li>
-                  <li className="mt-4">Last Visit:</li>
-                  <li>Next Visit:</li>
-                </ul>
-
-                <ul className="text-muted-foreground text-md xl:leading-8 leading-6">
-                  <li>25</li>
-                  <li>Female</li>
-                  <li>Iloilo City</li>
-                  <li>January 1, 1996</li>
-                  <li>Single</li>
-                  <li>Developer</li>
-                  <li>Right</li>
-                  <li>Roman Catholic</li>
-                  <li className="mt-4">January 1, 2022</li>
-                  <li>January 1, 2023</li>
+              <div className="2xl:row-span-4 2xl:text-md text-sm 2xl:mt-6">
+                <ul className="text-dark-blue font-semibold xl:text-lg text-md 2xl:leading-6 leading-4 grid 2xl:grid-cols-1 grid-cols-2 gap-4 grid-flow-row">
+                  <li>Age: <span className="text-muted-foreground font-normal ml-3">25</span></li>
+                  <li>Sex: <span className="text-muted-foreground font-normal ml-3">Female</span></li>
+                  <li>City: <span className="text-muted-foreground font-normal ml-3">Iloilo City</span></li>
+                  <li>Birthday: <span className="text-muted-foreground font-normal ml-3">January 1, 1996</span></li>
+                  <li>Civil Status: <span className="text-muted-foreground font-normal ml-3">Single</span></li>
+                  <li>Occupation: <span className="text-muted-foreground font-normal ml-3">Developer</span></li>
+                  <li>Handedness: <span className="text-muted-foreground font-normal ml-3">Right</span></li>
+                  <li>Religion: <span className="text-muted-foreground font-normal ml-3">Roman Catholic</span></li>
+                  <li className="mt-6">Last Visit: <span className="text-muted-foreground font-normal ml-3">January 1, 2022</span></li>
+                  <li>Next Visit: <span className="text-muted-foreground font-normal ml-3">January 1, 2023</span></li>
                 </ul>
               </div>
-
-
             </div>
-            <div className="grid grid-rows-6 grid-flow-col col-span-3 gap-4">
-              <div className="grid md:grid-cols-2 md:gap-8 lg:grid-cols-4 row-span-2">
+            <div className="flex flex-col 2xl:col-span-3 gap-6">
+              <div className="grid md:grid-cols-2 md:gap-8 2xl:grid-cols-4">
                 <Card x-chunk="dashboard-01-chunk-4" className="rounded-xl bg-[#EEFCFD]">
                   <CardHeader className="text-center">
                     <CardTitle className="text-md font-medium">
@@ -348,13 +322,19 @@ const Dashboard = () => {
                 </Card>
               </div>
 
-              <div className="row-span-1 bg-blue-500">
-                <h1>
-                  Hey
-                </h1>
+              <div>
+                <div className="flex flex-row gap-x-8">
+                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-10 2xl:py-7">
+                    + Diagnosis
+                  </Button>
+
+                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-10 2xl:py-7">
+                    + Add Certificate
+                  </Button>
+                </div>
               </div>
 
-              <div className="row-span-3 bg-red-500">
+              <div className=" bg-red-500">
                 <h1> Hey2</h1>
               </div>
 

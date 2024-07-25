@@ -30,10 +30,11 @@ export default async function Queue() {
             <div key={currentPatient.id}>
               <div className="mb-4">
                 <h2 className={`mb-3 text-2xl font-semibold`}>Patient Info</h2>
-                <p className={`m-0 max-w-[30ch] text-sm opacity-60`}>
+                <p className={`m-0 max-w-[30ch] text-lg `}>
                   Patient Name: {currentPatient.name}
                 </p>
-                <p className={`m-0 max-w-[30ch] text-sm opacity-60`}>
+
+                <p className={`m-0 max-w-[30ch] text-lg`}>
                   Patient Queue Number: {currentPatient.spotNumber}{" "}
                   {/** please change .spotNumber to different name */}
                 </p>
@@ -52,7 +53,7 @@ export default async function Queue() {
                 className=""
               >
                 <h2 className={`mt-4 px-4 py-2 bg-blue-500 text-white rounded`}>
-                  UPDATE PATIENT
+                  UPDATE PATIENT INFO
                 </h2>
               </Link>
             </div>

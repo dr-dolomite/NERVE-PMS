@@ -12,6 +12,7 @@ export default function PostsCreate() {
           initialData={{
             name: "",
             spotNumber: 0,
+            status: "waiting",
           }}
         />
       </div>

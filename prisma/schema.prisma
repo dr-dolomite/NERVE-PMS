@@ -110,7 +110,6 @@ model QueueNumber {
   id         String   @id @default(cuid())
   spotNumber Int      @default(autoincrement())
   name       String
-  //status     Int      @default(0)
   status     String   @default("pending")
   updatedAt  DateTime @updatedAt
 }

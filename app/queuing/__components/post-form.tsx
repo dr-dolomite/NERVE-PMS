@@ -8,6 +8,7 @@ import { useFormState } from "react-dom";
 interface FormErrors {
   name?: string[];
   spotNumber?: string[];
+  status?: string[];
 }
 
 // Define the shape of the form state
@@ -22,6 +23,7 @@ interface PostFormProps {
     // The initial data for the form fields
     name: string;
     spotNumber: number;
+    status: string;
   };
 }
 
@@ -55,6 +57,30 @@ export default function PostForm({ formAction, initialData }: PostFormProps) {
             {formState.errors.name && (
               <div className="text-red-500">
                 {formState.errors.name?.join(", ")}
+              </div>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="gender" className="block mb-2">
+              Status of Patient in Queue
+            </label>
+            <select
+              id="status"
+              name="status"
+              defaultValue={initialData.status}
+              className="rounded p-2 w-full"
+            >
+              <option value="" disabled={true}>
+                Select Status of Patient in Queue
+              </option>
+              <option value="waiting">Waiting</option>
+              <option value="onGoing">On Going Checkup</option>
+              <option value="finished">Finished Checkup</option>
+            </select>
+            {formState.errors.status && (
+              <div className="text-red-500">
+                {formState.errors.status?.join(", ")}
               </div>
             )}
           </div>

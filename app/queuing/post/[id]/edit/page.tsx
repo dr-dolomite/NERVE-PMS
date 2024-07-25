@@ -30,6 +30,7 @@ export default async function PostsEdit({ params }: PostsEditProps) {
           initialData={{
             name: post?.name ?? "",
             spotNumber: post?.spotNumber ?? 0,
+            status: post?.status ?? "waiting",
           }}
         />
       </div>

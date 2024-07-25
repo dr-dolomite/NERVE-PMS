@@ -17,13 +17,15 @@ import { z } from 'zod'
 // Define a schema for the post using Zod
 const postSchema = z.object({
     name: z.string(),
+    status: z.string(),
 })
 
 // Define an interface for the form state
 interface PostFormState {
     errors: {
-        name?: string[];
-        _form?: string[]; // Optional general form-level errors
+        name?: string[],
+        status?: string[],
+        _form?: string[], // Optional general form-level errors
     }
 }
 
@@ -34,6 +36,7 @@ export async function createPost(
 ): Promise<PostFormState> {
      const result = postSchema.safeParse({
         name: formData.get('name') as string, // Asserting as string
+        status: formData.get('status') as string, // Asserting as string
       
     })
 
@@ -54,6 +57,7 @@ export async function createPost(
                 //title: result.data.title,
                 // content: result.data.content,
                 name: result.data.name,
+                status: result.data.status,
             }
         })
     } catch (error: unknown) {
@@ -87,6 +91,7 @@ export async function updatePost(
     const result = postSchema.safeParse({
         name: formData.get('name') as string, // Asserting as string
         spotNumber: formData.get('spotNumber') as string, // Asserting as string
+        status: formData.get('status') as string, // Asserting as string
        
     })
 
@@ -104,6 +109,7 @@ export async function updatePost(
                 // title: result.data.title,
                 // content: result.data.content,
                 name: result.data.name,
+                status: result.data.status,
             }
         })
     } catch (error: unknown) {

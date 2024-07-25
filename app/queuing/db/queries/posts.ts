@@ -9,7 +9,6 @@ export async function fetchPosts(): Promise< QueueNumber[]> {  // Function to fe
     return await db.queueNumber.findMany({
         orderBy: [
             {
-                // updatedAt: 'desc',
                 updatedAt: 'asc',
             }
         ],

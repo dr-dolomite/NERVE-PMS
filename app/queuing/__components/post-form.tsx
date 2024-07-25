@@ -62,8 +62,8 @@ export default function PostForm({ formAction, initialData }: PostFormProps) {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="gender" className="block mb-2">
-              Status of Patient in Queue
+            <label htmlFor="status" className="block mb-2">
+              Status of Patient in Queue: {/* {initialData.status} */}
             </label>
             <select
               id="status"

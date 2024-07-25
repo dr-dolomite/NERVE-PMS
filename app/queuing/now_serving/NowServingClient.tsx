@@ -51,10 +51,12 @@ const NowServingClient: React.FC<NowServingClientProps> = ({
               id="status"
               name="status"
               // defaultValue={currentPatient.status}
+              defaultValue={currentPatient?.status}
               className="rounded p-2 w-full"
             >
-              <option value="pending">pending</option>
-              <option value="finished">finished checkup</option>
+              <option value="waiting">Waiting</option>
+              <option value="onGoing">On Going Checkup</option>
+              <option value="finished">Finished Checkup</option>
             </select>
           </div>
         </div>

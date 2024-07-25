@@ -27,15 +27,25 @@ export default async function Queue() {
         {currentPatients.map((currentPatient) => {
           // Mapping over the posts and rendering each one.
           return (
-            <div key={currentPatient.id}>
+            <div
+              key={currentPatient.id}
+              className="border-4 border-indigo-500/50 "
+            >
               <div className="mb-4">
                 <h2 className={`mb-3 text-2xl font-semibold`}>Patient Info</h2>
                 <p className={`m-0 max-w-[30ch] text-lg `}>
-                  Patient Name: {currentPatient.name}
+                  Patient Name: <strong>{currentPatient.name}</strong>
                 </p>
 
                 <p className={`m-0 max-w-[30ch] text-lg`}>
-                  Patient Queue Number: {currentPatient.spotNumber}{" "}
+                  Patient Queue Number:{" "}
+                  <strong>{currentPatient.spotNumber} </strong>
+                  {/** please change .spotNumber to different name */}
+                </p>
+
+                <p className={`m-0 max-w-[30ch] text-lg`}>
+                  Patient Queue Status:{" "}
+                  <strong>{currentPatient.status} </strong>
                   {/** please change .spotNumber to different name */}
                 </p>
               </div>

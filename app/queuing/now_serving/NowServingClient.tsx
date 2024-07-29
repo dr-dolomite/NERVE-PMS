@@ -18,6 +18,8 @@ export default function NowServingClient({
 }: NowServingClientProps) {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isLastPatient, setIsLastPatient] = useState(false);
+  const [isFirstPatient, setIsFirstPatient] = useState(true);
+  const [voicesLoaded, setVoicesLoaded] = useState(false);
 
   useEffect(() => {
     // Initialize with the first non-finished patient
@@ -30,6 +32,17 @@ export default function NowServingClient({
     }
     setCurrentIndex(index < currentPatients.length ? index : 0);
     checkIfLastPatient(index);
+    checkIfFirstPatient(index);
+
+    // Load voices for speech synthesis
+    const voices = speechSynthesis.getVoices();
+    if (voices.length) {
+      setVoicesLoaded(true);
+    } else {
+      speechSynthesis.onvoiceschanged = () => {
+        setVoicesLoaded(true);
+      };
+    }
   }, [currentPatients]);
 
   const checkIfLastPatient = (index: number) => {
@@ -44,12 +57,25 @@ export default function NowServingClient({
     setIsLastPatient(true);
   };
 
+  const checkIfFirstPatient = (index: number) => {
+    let prevIndex = index - 1;
+    while (prevIndex >= 0) {
+      if (currentPatients[prevIndex].status !== "Finished Checkup") {
+        setIsFirstPatient(false);
+        return;
+      }
+      prevIndex--;
+    }
+    setIsFirstPatient(true);
+  };
+
   const handleNextPatient = () => {
     let nextIndex = currentIndex + 1;
     while (nextIndex < currentPatients.length) {
       if (currentPatients[nextIndex].status !== "Finished Checkup") {
         setCurrentIndex(nextIndex);
         checkIfLastPatient(nextIndex);
+        checkIfFirstPatient(nextIndex);
         return;
       }
       nextIndex++;
@@ -58,7 +84,41 @@ export default function NowServingClient({
     setIsLastPatient(true);
   };
 
+  const handlePreviousPatient = () => {
+    let prevIndex = currentIndex - 1;
+    while (prevIndex >= 0) {
+      if (currentPatients[prevIndex].status !== "Finished Checkup") {
+        setCurrentIndex(prevIndex);
+        checkIfLastPatient(prevIndex);
+        checkIfFirstPatient(prevIndex);
+        return;
+      }
+      prevIndex--;
+    }
+    // If we've reached here, we're at the first valid patient
+    setIsFirstPatient(true);
+  };
+
   const currentPatient = currentPatients[currentIndex];
+
+  function speak() {
+    if (!voicesLoaded) {
+      console.log("Voices not loaded yet");
+      return;
+    }
+
+    // Create a SpeechSynthesisUtterance
+    const utterance = new SpeechSynthesisUtterance(
+      `Now serving Queue Number ${currentPatient.spotNumber} ${currentPatient.name}`
+    );
+
+    // Select a voice
+    const voices = speechSynthesis.getVoices();
+    utterance.voice = voices[0]; // Choose a specific voice
+
+    // Speak the text
+    speechSynthesis.speak(utterance);
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-start p-24">
@@ -82,6 +142,15 @@ export default function NowServingClient({
       )}
 
       <div className="flex flex-row space-x-14">
+        {!isFirstPatient && (
+          <button
+            onClick={handlePreviousPatient}
+            className="mt-12 px-4 py-2 bg-yellow-500 text-white rounded"
+          >
+            Previous Patient
+          </button>
+        )}
+
         {!isLastPatient && (
           <button
             onClick={handleNextPatient}
@@ -94,7 +163,8 @@ export default function NowServingClient({
 
       <div className="flex flex-row space-x-14">
         <button
-          onClick={() => console.log("Click is working")}
+          // onClick={() => console.log("Click is working")}
+          onClick={speak}
           className="mt-12 px-4 py-2 bg-slate-500 text-white rounded"
         >
           Notify

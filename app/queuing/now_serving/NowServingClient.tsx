@@ -16,54 +16,49 @@ interface NowServingClientProps {
 export default function NowServingClient({
   currentPatients,
 }: NowServingClientProps) {
-  const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isLastPatient, setIsLastPatient] = useState(false);
 
-  const handleNextPatient = () => {
-    if (currentIndex === null) {
-      setCurrentIndex(0);
-    } else {
-      let nextIndex = currentIndex + 1;
-      while (nextIndex < currentPatients.length) {
-        if (currentPatients[nextIndex].status !== "Finished Checkup") {
-          setCurrentIndex(nextIndex);
-          return;
-        }
-        nextIndex++;
-      }
-      // If we've reached here, we're at the last valid patient
-      setIsLastPatient(true);
+  useEffect(() => {
+    // Initialize with the first non-finished patient
+    let index = 0;
+    while (
+      index < currentPatients.length &&
+      currentPatients[index].status === "Finished Checkup"
+    ) {
+      index++;
     }
+    setCurrentIndex(index < currentPatients.length ? index : 0);
+    checkIfLastPatient(index);
+  }, [currentPatients]);
+
+  const checkIfLastPatient = (index: number) => {
+    let nextIndex = index + 1;
+    while (nextIndex < currentPatients.length) {
+      if (currentPatients[nextIndex].status !== "Finished Checkup") {
+        setIsLastPatient(false);
+        return;
+      }
+      nextIndex++;
+    }
+    setIsLastPatient(true);
   };
 
-  useEffect(() => {
-    // Check if we're at the last patient
-    if (currentIndex !== null) {
-      let nextIndex = currentIndex + 1;
-      while (nextIndex < currentPatients.length) {
-        if (currentPatients[nextIndex].status !== "Finished Checkup") {
-          setIsLastPatient(false);
-          return;
-        }
-        nextIndex++;
+  const handleNextPatient = () => {
+    let nextIndex = currentIndex + 1;
+    while (nextIndex < currentPatients.length) {
+      if (currentPatients[nextIndex].status !== "Finished Checkup") {
+        setCurrentIndex(nextIndex);
+        checkIfLastPatient(nextIndex);
+        return;
       }
-      setIsLastPatient(true);
+      nextIndex++;
     }
-  }, [currentIndex, currentPatients]);
+    // If we've reached here, we're at the last valid patient
+    setIsLastPatient(true);
+  };
 
-  const currentPatient =
-    currentIndex !== null ? currentPatients[currentIndex] : null;
-
-  // If current patient has finished checkup, move to the next one
-  useEffect(() => {
-    if (
-      currentPatient &&
-      currentPatient.status === "Finished Checkup" &&
-      !isLastPatient
-    ) {
-      handleNextPatient();
-    }
-  }, [currentPatient, isLastPatient]);
+  const currentPatient = currentPatients[currentIndex];
 
   return (
     <main className="flex min-h-screen flex-col items-start p-24">
@@ -90,19 +85,30 @@ export default function NowServingClient({
         {!isLastPatient && (
           <button
             onClick={handleNextPatient}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+            className="mt-12 px-4 py-2 bg-green-500 text-white rounded"
           >
             Next Patient
           </button>
         )}
       </div>
 
-      <button
-        onClick={() => console.log("Click is working")}
-        className="mt-12 px-4 py-2 bg-slate-500 text-white rounded"
-      >
-        Notify
-      </button>
+      <div className="flex flex-row space-x-14">
+        <button
+          onClick={() => console.log("Click is working")}
+          className="mt-12 px-4 py-2 bg-slate-500 text-white rounded"
+        >
+          Notify
+        </button>
+        <Link
+          key={currentPatient.id}
+          href={`/queuing/post/${currentPatient.id}/edit`}
+          className=""
+        >
+          <button className={`mt-12 px-4 py-2 bg-blue-500 text-white rounded`}>
+            UPDATE PATIENT INFO
+          </button>
+        </Link>
+      </div>
 
       <Link
         href="/queuing"

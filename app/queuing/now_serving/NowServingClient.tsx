@@ -134,6 +134,8 @@ export default function NowServingClient({
       const doc = notificationWindowRef.current.document;
 
       // If it's a new window, write the full HTML structure
+
+      //AI GENERATED this part
       if (doc.body.innerHTML === "") {
         doc.write(`
           <html>
@@ -244,7 +246,7 @@ export default function NowServingClient({
         </button>
         <Link
           key={currentPatient.id}
-          href={`/queuing/post/${currentPatient.id}/edit`}
+          href={`/queuing/post/${currentPatient.id}/edit_queue`}
           className=""
         >
           <button className={`mt-12 px-4 py-2 bg-blue-500 text-white rounded`}>

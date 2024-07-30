@@ -133,6 +133,58 @@ export async function updatePost(
     redirect('/queuing')
 }
 
+
+
+export async function updateQueuePost(
+    id: string,
+    formState: PostFormState,
+    formData: FormData
+): Promise<PostFormState> {
+    const result = postSchema.safeParse({
+        name: formData.get('name') as string, // Asserting as string
+        spotNumber: formData.get('spotNumber') as string, // Asserting as string
+        status: formData.get('status') as string, // Asserting as string
+       
+    })
+
+    if (!result.success) {
+        return {
+            errors: result.error.flatten().fieldErrors
+        }
+    }
+
+    let post: QueueNumber
+    try {
+        post = await db.queueNumber.update({
+            where: { id },
+            data: {
+                // title: result.data.title,
+                // content: result.data.content,
+                name: result.data.name,
+                status: result.data.status,
+            }
+        })
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return {
+                errors: {
+                    _form: [error.message],
+                },
+            }
+        }
+        else {
+            return {
+                errors: {
+                    _form: ['Something went wrong'],
+                },
+            }
+        }
+    }
+
+    revalidatePath('/queuing/now_serving')
+    redirect('/queuing/now_serving')
+}
+
 export async function deletePost(
     id: string,
 ): Promise<PostFormState> {

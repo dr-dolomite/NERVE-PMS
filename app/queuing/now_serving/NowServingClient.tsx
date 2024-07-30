@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface Patient {
   id: string;
@@ -101,23 +101,96 @@ export default function NowServingClient({
 
   const currentPatient = currentPatients[currentIndex];
 
+  const notificationWindowRef = useRef<Window | null>(null);
+
   function speak() {
     if (!voicesLoaded) {
       console.log("Voices not loaded yet");
       return;
     }
 
-    // Create a SpeechSynthesisUtterance
     const utterance = new SpeechSynthesisUtterance(
       `Now serving Queue Number ${currentPatient.spotNumber} ${currentPatient.name}`
     );
 
-    // Select a voice
     const voices = speechSynthesis.getVoices();
-    utterance.voice = voices[0]; // Choose a specific voice
+    utterance.voice = voices[0];
 
-    // Speak the text
     speechSynthesis.speak(utterance);
+
+    // Open or update the notification window
+    if (
+      !notificationWindowRef.current ||
+      notificationWindowRef.current.closed
+    ) {
+      notificationWindowRef.current = window.open(
+        "",
+        "NotificationWindow",
+        "fullscreen=yes"
+      );
+    }
+
+    if (notificationWindowRef.current) {
+      const doc = notificationWindowRef.current.document;
+
+      // If it's a new window, write the full HTML structure
+      if (doc.body.innerHTML === "") {
+        doc.write(`
+          <html>
+            <head>
+              <title>Now Serving</title>
+              <style>
+                body { 
+                  font-family: Arial, sans-serif; 
+                  display: flex; 
+                  justify-content: center; 
+                  align-items: center; 
+                  height: 100vh; 
+                  margin: 0; 
+                  background-color: #f0f0f0;
+                  overflow: hidden;
+                }
+                .container { 
+                  background-color: white; 
+                  padding: 40px; 
+                  border-radius: 10px; 
+                  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                  text-align: center;
+                }
+                h1 { 
+                  color: #333; 
+                  font-size: 4em;
+                  margin-bottom: 30px;
+                }
+                p { 
+                  color: #666; 
+                  font-size: 3em;
+                  margin: 20px 0;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <h1>Now Serving</h1>
+                <p id="patientName"></p>
+                <p id="queueNumber"></p>
+              </div>
+            </body>
+          </html>
+        `);
+        doc.close();
+      }
+
+      // Update the patient information
+      const nameElement = doc.getElementById("patientName");
+      const numberElement = doc.getElementById("queueNumber");
+      if (nameElement && numberElement) {
+        nameElement.textContent = `Patient Name: ${currentPatient.name}`;
+        numberElement.textContent = `Queue Number: ${currentPatient.spotNumber}`;
+      }
+
+      notificationWindowRef.current.focus();
+    }
   }
 
   return (

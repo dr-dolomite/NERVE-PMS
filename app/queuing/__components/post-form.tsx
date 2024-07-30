@@ -77,9 +77,6 @@ export default function PostForm({ formAction, initialData }: PostFormProps) {
               <option value="Waiting">Waiting</option>
               <option value="On Going Checkup">On Going Checkup</option>
               <option value="Finished Checkup">Finished Checkup</option>
-              {/* <option value="waiting">Waiting</option>
-              <option value="onGoing">On Going Checkup</option>
-              <option value="finished">Finished Checkup</option> */}
             </select>
             {formState.errors.status && (
               <div className="text-red-500">

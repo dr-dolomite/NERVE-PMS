@@ -13,6 +13,9 @@ export default async function Queue() {
     day: "numeric",
   };
 
+  // Sort the currentPatients array by spotNumber in ascending order
+  currentPatients.sort((a, b) => a.spotNumber - b.spotNumber);
+
   return (
     <main className="flex min-h-screen flex-col items-start p-24">
       <div className="mb-4">
@@ -40,13 +43,11 @@ export default async function Queue() {
                 <p className={`m-0 max-w-[30ch] text-lg`}>
                   Patient Queue Number:{" "}
                   <strong>{currentPatient.spotNumber} </strong>
-                  {/** please change .spotNumber to different name */}
                 </p>
 
                 <p className={`m-0 max-w-[30ch] text-lg`}>
                   Patient Queue Status:{" "}
                   <strong>{currentPatient.status} </strong>
-                  {/** please change .spotNumber to different name */}
                 </p>
               </div>
               <div className="text-sm opacity-30">

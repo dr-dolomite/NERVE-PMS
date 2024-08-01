@@ -16,6 +16,11 @@ interface NowServingClientProps {
 export default function NowServingClient({
   currentPatients,
 }: NowServingClientProps) {
+  // Sort patients by their Queue Number (spotNumber) in ascending order
+  const sortedPatients = currentPatients.sort(
+    (a, b) => a.spotNumber - b.spotNumber
+  );
+
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [isLastPatient, setIsLastPatient] = useState(false);
   const [isFirstPatient, setIsFirstPatient] = useState(true);
@@ -25,12 +30,12 @@ export default function NowServingClient({
     // Initialize with the first non-finished patient
     let index = 0;
     while (
-      index < currentPatients.length &&
-      currentPatients[index].status === "Finished Checkup"
+      index < sortedPatients.length &&
+      sortedPatients[index].status === "Finished Checkup"
     ) {
       index++;
     }
-    setCurrentIndex(index < currentPatients.length ? index : 0);
+    setCurrentIndex(index < sortedPatients.length ? index : 0);
     checkIfLastPatient(index);
     checkIfFirstPatient(index);
 
@@ -43,12 +48,12 @@ export default function NowServingClient({
         setVoicesLoaded(true);
       };
     }
-  }, [currentPatients]);
+  }, [sortedPatients]);
 
   const checkIfLastPatient = (index: number) => {
     let nextIndex = index + 1;
-    while (nextIndex < currentPatients.length) {
-      if (currentPatients[nextIndex].status !== "Finished Checkup") {
+    while (nextIndex < sortedPatients.length) {
+      if (sortedPatients[nextIndex].status !== "Finished Checkup") {
         setIsLastPatient(false);
         return;
       }
@@ -60,7 +65,7 @@ export default function NowServingClient({
   const checkIfFirstPatient = (index: number) => {
     let prevIndex = index - 1;
     while (prevIndex >= 0) {
-      if (currentPatients[prevIndex].status !== "Finished Checkup") {
+      if (sortedPatients[prevIndex].status !== "Finished Checkup") {
         setIsFirstPatient(false);
         return;
       }
@@ -71,8 +76,8 @@ export default function NowServingClient({
 
   const handleNextPatient = () => {
     let nextIndex = currentIndex + 1;
-    while (nextIndex < currentPatients.length) {
-      if (currentPatients[nextIndex].status !== "Finished Checkup") {
+    while (nextIndex < sortedPatients.length) {
+      if (sortedPatients[nextIndex].status !== "Finished Checkup") {
         setCurrentIndex(nextIndex);
         checkIfLastPatient(nextIndex);
         checkIfFirstPatient(nextIndex);
@@ -87,7 +92,7 @@ export default function NowServingClient({
   const handlePreviousPatient = () => {
     let prevIndex = currentIndex - 1;
     while (prevIndex >= 0) {
-      if (currentPatients[prevIndex].status !== "Finished Checkup") {
+      if (sortedPatients[prevIndex].status !== "Finished Checkup") {
         setCurrentIndex(prevIndex);
         checkIfLastPatient(prevIndex);
         checkIfFirstPatient(prevIndex);
@@ -99,7 +104,7 @@ export default function NowServingClient({
     setIsFirstPatient(true);
   };
 
-  const currentPatient = currentPatients[currentIndex];
+  const currentPatient = sortedPatients[currentIndex];
 
   const notificationWindowRef = useRef<Window | null>(null);
 
@@ -126,7 +131,7 @@ export default function NowServingClient({
       notificationWindowRef.current = window.open(
         "",
         "NotificationWindow",
-        "fullscreen=yes"
+        "fullscreen=yes, popup=yes"
       );
     }
 
@@ -134,8 +139,6 @@ export default function NowServingClient({
       const doc = notificationWindowRef.current.document;
 
       // If it's a new window, write the full HTML structure
-
-      //AI GENERATED this part
       if (doc.body.innerHTML === "") {
         doc.write(`
           <html>

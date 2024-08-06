@@ -52,8 +52,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                     <div className="flex-1">
                         <nav className="grid items-start lg:space-y-2 px-2 lg:py-6 py-2 text-lg font-medium lg:px-4">
                             <Link
-                                href="/doctor/dashboard"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/doctor/dashboard" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
+                                href="/doctor/dashboard/patient"
+                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/doctor/dashboard/patient" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
                             >
                                 <Home className="h-5 w-5" />
                                 Dashboard
@@ -113,8 +113,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                                     <span className="sr-only">NERVE</span>
                                 </Link>
                                 <Link
-                                    href="/doctor/dashboard"
-                                    className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 ${pathname == "/doctor/dashboard" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
+                                    href="/doctor/dashboard/patient"
+                                    className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 ${pathname == "/doctor/dashboard/patient" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
                                 >
                                     <Home className="h-5 w-5" />
                                     Dashboard

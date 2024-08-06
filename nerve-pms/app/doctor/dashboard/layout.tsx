@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import {
   Card,
   CardContent,
@@ -16,10 +18,9 @@ import {
   AvatarFallback,
   AvatarImage
 } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button";
 
 
-const Dashboard = () => {
+const Dashboard = ({ children }: { children: ReactNode }) => {
 
   const currentDate = new Date();
   const month = currentDate.toLocaleString('default', { month: 'long' });
@@ -73,10 +74,10 @@ const Dashboard = () => {
 
             <div className="flex flex-col mx-auto">
               <CardHeader className="text-center">
-                <CardTitle className="2xl:text-lg text-sm font-normal text-gray antialiased">
+                <CardTitle className="2xl:text-lg text-sm font-medium text-gray antialiased">
                   Patients Today
                 </CardTitle>
-                <CardTitle className="2xl:text-4xl text-2xl font-medium mt-2 antialiased">
+                <CardTitle className="2xl:text-4xl text-2xl font-semibold mt-2 antialiased">
                   12 / 15
                 </CardTitle>
               </CardHeader>
@@ -121,10 +122,10 @@ const Dashboard = () => {
 
             <div className="flex flex-col mx-auto">
               <CardHeader className="text-center">
-                <CardTitle className="2xl:text-lg text-sm font-normal text-gray antialiased">
+                <CardTitle className="2xl:text-lg text-sm font-medium text-gray antialiased">
                   Scheduled
                 </CardTitle>
-                <CardTitle className="2xl:text-4xl text-2xl font-medium mt-2 antialiased">
+                <CardTitle className="2xl:text-4xl text-2xl font-semibold mt-2 antialiased">
                   5
                 </CardTitle>
               </CardHeader>
@@ -149,10 +150,10 @@ const Dashboard = () => {
 
             <div className="flex flex-col mx-auto">
               <CardHeader className="text-center">
-                <CardTitle className="2xl:text-lg text-sm font-normal text-gray antialiased">
+                <CardTitle className="2xl:text-lg text-sm font-medium text-gray antialiased">
                   Payment
                 </CardTitle>
-                <CardTitle className="2xl:text-4xl text-2xl font-medium mt-2 antialiased">
+                <CardTitle className="2xl:text-4xl text-2xl font-semibold mt-2 antialiased">
                   ₱ 500
                 </CardTitle>
               </CardHeader>
@@ -322,21 +323,50 @@ const Dashboard = () => {
                 </Card>
               </div>
 
-              <div>
+              {children}
+
+              {/* <div>
                 <div className="flex flex-row gap-x-8">
-                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-10 2xl:py-7">
+                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-8 2xl:py-6">
+                    <Link href="/doctor/dashboards/patient/diagnosis">
                     + Diagnosis
+                    </Link>
                   </Button>
 
-                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-10 2xl:py-7">
+                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-8 2xl:py-6">
                     + Add Certificate
                   </Button>
                 </div>
-              </div>
+              </div> */}
 
-              <div className=" bg-red-500">
-                <h1> Hey2</h1>
-              </div>
+              {/* <div>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>Diagnosis</AccordionTrigger>
+                    <AccordionContent>
+                      Display present and past diagnosis of the patient.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>Patient Medical History</AccordionTrigger>
+                    <AccordionContent>
+                      Display the patient&apos;s medical history.
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger>Medical Lab Results</AccordionTrigger>
+                    <AccordionContent>
+                      Display the patient&apos;s medical lab results.
+                    </AccordionContent>
+                    <AccordionItem value="item-4">
+                      <AccordionTrigger>Prescription History</AccordionTrigger>
+                      <AccordionContent>
+                        Display the patient&apos;s prescription history.
+                      </AccordionContent>
+                    </AccordionItem>
+                  </AccordionItem>
+                </Accordion>
+              </div> */}
 
             </div>
           </CardContent>

@@ -7,6 +7,10 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion";
 
+import {
+    PlusIcon,
+} from "@radix-ui/react-icons";
+
 import Link from "next/link";
 
 const PatientPage = () => {
@@ -14,13 +18,13 @@ const PatientPage = () => {
         <>
             <div>
                 <div className="flex flex-row gap-x-8">
-                    <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-8 2xl:py-6">
-                        <Link href="/doctor/dashboard/patient/diagnosis">
+                    <Link href="/doctor/dashboard/patient/diagnosis">
+                        <Button type="submit" className="my-button-blue" size="lg">
                             + Diagnosis
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
 
-                    <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-8 2xl:py-6">
+                    <Button className="my-button-blue" size="lg">
                         + Add Certificate
                     </Button>
                 </div>

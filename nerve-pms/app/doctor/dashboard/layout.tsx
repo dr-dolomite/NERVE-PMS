@@ -33,24 +33,22 @@ const Dashboard = ({ children }: { children: ReactNode }) => {
     <div className="grid grid-cols-1 gap-6">
       <div className="flex justify-between">
         <div className="flex flex-col items-start">
-          <h2 className="text-gray font-medium lg:text-xl md:text-lg text-md antialiased">
+          <h2 className="text-gray font-medium 2xl:text-lg text-md antialiased">
             Hi Doc,
           </h2>
-          <h1 className="text-primary font-semibold lg:text-4xl md:text-2xl text-xl antialiased">
+          <h1 className="text-primary font-semibold 2xl:text-2xl text-xl antialiased">
             Welcome Back!
           </h1>
         </div>
 
         <div className="flex flex-col items-end">
-          <h2 className="text-gray font-medium lg:text-xl md:text-lg text-md antialiased">
-            Hi Doc,
+          <h2 className="text-gray font-medium 2xl:text-lg text-md  antialiased">
+            Today is
           </h2>
-          <h1 className="text-primary font-medium lg:text-xl md:text-lg text-md antialiased">
+          <h1 className="text-primary font-medium 2xl:text-lg text-md antialiased">
             {day} {month} {dayOfMonth}, {year}
           </h1>
         </div>
-
-
       </div>
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
         <Card x-chunk="dashboard-01-chunk-0" className="rounded-xl">

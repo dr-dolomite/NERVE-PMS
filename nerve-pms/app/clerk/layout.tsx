@@ -77,14 +77,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                                     6
                                 </Badge>
                             </Link>
-                            <Link
-                                href="/doctor/forms"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/doctor/forms" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
-                            >
-                                <Clipboard className="h-5 w-5" />
-                                Forms
-                            </Link>
-
                         </nav>
                     </div>
 
@@ -135,13 +127,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                                     <Badge className="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full background-pink hover:bg-[#f05c75]">
                                         6
                                     </Badge>
-                                </Link>
-                                <Link
-                                    href="/doctor/forms"
-                                    className={`mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 ${pathname == "/doctor/forms" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
-                                >
-                                    <Clipboard className="h-5 w-5" />
-                                    Forms
                                 </Link>
                             </nav>
                         </SheetContent>

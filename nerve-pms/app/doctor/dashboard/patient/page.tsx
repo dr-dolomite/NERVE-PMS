@@ -24,9 +24,12 @@ const PatientPage = () => {
                         </Button>
                     </Link>
 
-                    <Button className="my-button-blue" size="lg">
-                        + Add Certificate
-                    </Button>
+                    <Link href='/doctor/dashboard/patient/medical-cert'>
+                        <Button className="my-button-blue" size="lg">
+                            + Add Medical Certificate
+                        </Button>
+                    </Link>
+
                 </div>
             </div>
 

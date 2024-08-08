@@ -48,7 +48,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import Link from 'next/link'
 
 import {
-    ArrowRight,
+    HomeIcon,
     PrinterIcon,
 } from "lucide-react"
 import { Card } from "@/components/ui/card"
@@ -418,16 +418,18 @@ const LabRequestPage = () => {
             <div className="flex flex-row justify-between">
                 <div className="grid grid-flow-row grid-cols-2 space-x-4">
                     <Button type="reset" className="my-button-gray" size="lg">Reset</Button>
-                    <Link href="/doctor/dashboard/patient/diagnosis">
+                    <Link href="/doctor/dashboard/patient">
                         <Button type="button" className="my-button-blue" size="lg">
-                            Go Back</Button>
+                            <HomeIcon className="w-4 h-4 mr-2" />
+                            Go Back to Home</Button>
                     </Link>
                 </div>
 
                 <Link href="/doctor/dashboard/patient/prescription">
                     <Button type="submit" className="my-button-blue" size="lg">
+                        <PrinterIcon className="w-4 h-4 mr-2" />
                         Save and Print
-                        <PrinterIcon className="w-4 h-4 ml-2" /></Button>
+                    </Button>
                 </Link>
             </div>
         </>

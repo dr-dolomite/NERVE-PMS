@@ -10,6 +10,13 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.4.1",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/google-calendar": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@headlessui/react": "^2.1.2",
     "@hookform/resolvers": "^3.6.0",
     "@prisma/client": "^5.16.1",
     "@radix-ui/react-avatar": "^1.1.0",

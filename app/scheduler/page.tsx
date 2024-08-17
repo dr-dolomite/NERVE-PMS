@@ -39,11 +39,13 @@ import { Input } from "@/components/ui/input";
 import { FaCalendar } from "react-icons/fa";
 import { TimePicker12Demo } from "./time-select/time-picker-12h-demo"; // Adjust this import path as needed
 
-// A <TimePickerInput /> component built with React and Shadcn UI. https://time.openstatus.dev/
 // Schema for form validation using Zod
 const FormSchema = z.object({
-  eventDateTime: z.date({
-    required_error: "An event date and time is required.",
+  startDateTime: z.date({
+    required_error: "A start date and time is required.",
+  }),
+  endDateTime: z.date({
+    required_error: "An end date and time is required.",
   }),
   title: z.string().min(1, "Event title is required"),
   patientName: z.string().min(1, "Patient name is required"),
@@ -54,6 +56,7 @@ const FormSchema = z.object({
 interface Event {
   title: string;
   start: Date | string;
+  end: Date | string;
   allDay: boolean;
   id: number;
   patientName?: string;
@@ -61,74 +64,50 @@ interface Event {
 }
 
 export default function Scheduler() {
-  const [allEvents, setAllEvents] = useState<Event[]>([]); // State to store all events
-  const [showModal, setShowModal] = useState(false); // State to control the visibility of the add event modal
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // State to control the visibility of the delete event modal
-  const [idToDelete, setIdToDelete] = useState<number | null>(null); // State to store the id of the event to delete
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<number | null>(null);
 
-  // Initialize the form with default values and validation
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      eventDateTime: new Date(),
+      startDateTime: new Date(),
+      endDateTime: new Date(),
       title: "",
       patientName: "",
       description: "",
     },
   });
 
-  // Handle date click event from the calendar
   function handleDateClick(arg: { date: Date; allDay: boolean }) {
-    form.setValue("eventDateTime", arg.date); // Set the clicked date as the event date
-    setShowModal(true); // Open the add event modal
+    form.setValue("startDateTime", arg.date);
+    setShowModal(true);
   }
 
-  // Add a new event to the calendar
   function addEvent(data: DropArg) {
-    const newEvent: Event = {
-      title: data.draggedEl.innerText,
-      start: data.date,
-      allDay: data.allDay,
-      id: new Date().getTime(),
-    };
-    setAllEvents([...allEvents, newEvent]); // Update the state with the new event
+    // Function left empty intentionally
   }
 
-  // Handle the delete event modal
   function handleDeleteModal(data: { event: { id: string } }) {
-    setShowDeleteModal(true); // Open the delete event modal
-    setIdToDelete(Number(data.event.id)); // Store the id of the event to delete
+    setShowDeleteModal(true);
+    setIdToDelete(Number(data.event.id));
   }
 
-  // Delete an event from the calendar
   function handleDelete() {
-    setAllEvents(
-      allEvents.filter((event) => Number(event.id) !== Number(idToDelete))
-    );
-    setShowDeleteModal(false); // Close the delete event modal
-    setIdToDelete(null); // Reset the id to delete
+    // Function left empty intentionally
   }
 
-  // Close all modals and reset form
   function handleCloseModal() {
     setShowModal(false);
-    form.reset(); // Reset the form fields
+    form.reset();
     setShowDeleteModal(false);
     setIdToDelete(null);
   }
 
-  // Handle form submission to add a new event
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const newEvent: Event = {
-      title: data.title,
-      start: data.eventDateTime,
-      allDay: false,
-      id: new Date().getTime(),
-      patientName: data.patientName,
-      description: data.description,
-    };
-    setAllEvents([...allEvents, newEvent]); // Add the new event to the state
-    handleCloseModal(); // Close the modal
+    // Function left empty intentionally
+    handleCloseModal();
     toast({
       title: "Event added",
       description: "Your event has been successfully added to the calendar.",
@@ -160,12 +139,12 @@ export default function Scheduler() {
         droppable={true}
         selectable={true}
         selectMirror={true}
-        dateClick={handleDateClick} // Handle date click to open the add event modal
-        drop={(data) => addEvent(data)} // Handle drop event to add new events
+        dateClick={handleDateClick}
+        drop={(data) => addEvent(data)}
         showNonCurrentDates={false}
         eventClick={(data) => {
           data.jsEvent.preventDefault();
-          handleDeleteModal(data); // Handle event click to open delete modal
+          handleDeleteModal(data);
         }}
       />
 
@@ -205,7 +184,7 @@ export default function Scheduler() {
               />
               <FormField
                 control={form.control}
-                name="eventDateTime"
+                name="startDateTime"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Start Time</FormLabel>
@@ -221,7 +200,7 @@ export default function Scheduler() {
                           >
                             <FaCalendar className="mr-2 h-4 w-4" />
                             {field.value ? (
-                              format(field.value, "PPP hh:mm:ss a") // Display the selected date and time in 12-hour format
+                              format(field.value, "PPP hh:mm:ss a")
                             ) : (
                               <span>Pick a start time</span>
                             )}
@@ -232,13 +211,13 @@ export default function Scheduler() {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange} // Handle date selection
+                          onSelect={field.onChange}
                           initialFocus
                         />
                         <div className="p-3 border-t border-border">
                           <TimePicker12Demo
                             setDate={field.onChange}
-                            date={field.value} // TimePicker for start time
+                            date={field.value}
                           />
                         </div>
                       </PopoverContent>
@@ -248,7 +227,7 @@ export default function Scheduler() {
               />
               <FormField
                 control={form.control}
-                name="eventDateTime"
+                name="endDateTime"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>End Time</FormLabel>
@@ -264,7 +243,7 @@ export default function Scheduler() {
                           >
                             <FaCalendar className="mr-2 h-4 w-4" />
                             {field.value ? (
-                              format(field.value, "PPP hh:mm:ss a") // Display the selected date and time in 12-hour format
+                              format(field.value, "PPP hh:mm:ss a")
                             ) : (
                               <span>Pick an end time</span>
                             )}
@@ -275,13 +254,13 @@ export default function Scheduler() {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange} // Handle date selection
+                          onSelect={field.onChange}
                           initialFocus
                         />
                         <div className="p-3 border-t border-border">
                           <TimePicker12Demo
                             setDate={field.onChange}
-                            date={field.value} // TimePicker for end time
+                            date={field.value}
                           />
                         </div>
                       </PopoverContent>

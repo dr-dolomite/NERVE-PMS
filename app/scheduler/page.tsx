@@ -37,7 +37,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FaCalendar } from "react-icons/fa";
-import { TimePicker12Demo } from "./time-picker-12h-demo"; // Adjust this import path as needed
+import { TimePicker12Demo } from "./time-select/time-picker-12h-demo"; // Adjust this import path as needed
 
 // A <TimePickerInput /> component built with React and Shadcn UI. https://time.openstatus.dev/
 // Schema for form validation using Zod

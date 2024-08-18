@@ -39,6 +39,9 @@ import { Input } from "@/components/ui/input";
 import { FaCalendar } from "react-icons/fa";
 import { TimePicker12Demo } from "./time-select/time-picker-12h-demo"; // Adjust this import path as needed
 
+import { GoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 // Schema for form validation using Zod
 const FormSchema = z.object({
   startDateTime: z.date({
@@ -116,6 +119,20 @@ export default function Scheduler() {
 
   return (
     <>
+      {/* REMOVE THE GOOGLE SIGN IN IF NEEDED */}
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID || ""}>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+          // useOneTap
+          // auto_select
+        />
+      </GoogleOAuthProvider>
+      {/* REMOVE THE GOOGLE SIGN IN IF NEEDED */}
       <FullCalendar
         plugins={[
           dayGridPlugin,
@@ -147,7 +164,6 @@ export default function Scheduler() {
           handleDeleteModal(data);
         }}
       />
-
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent>
           <DialogHeader>
@@ -290,7 +306,6 @@ export default function Scheduler() {
           </Form>
         </DialogContent>
       </Dialog>
-
       <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
         <DialogContent>
           <DialogHeader>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -39,6 +39,8 @@ import { Input } from "@/components/ui/input";
 import { FaCalendar } from "react-icons/fa";
 import { TimePicker12Demo } from "./time-select/time-picker-12h-demo"; // Adjust this import path as needed
 
+import { gapi } from "gapi-script";
+
 import { GoogleLogin } from "@react-oauth/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -55,15 +57,24 @@ const FormSchema = z.object({
   description: z.string().optional(),
 });
 
-// Event interface for typing events in the calendar
 interface Event {
-  title: string;
-  start: Date | string;
-  end: Date | string;
-  allDay: boolean;
-  id: number;
-  patientName?: string;
+  summary: string;
+  location?: string;
   description?: string;
+  start: {
+    dateTime: string;
+    timeZone: string;
+  };
+  end: {
+    dateTime: string;
+    timeZone: string;
+  };
+  recurrence?: string[];
+  attendees?: Array<{ email: string }>;
+  reminders?: {
+    useDefault: boolean;
+    overrides: Array<{ method: string; minutes: number }>;
+  };
 }
 
 export default function Scheduler() {
@@ -71,6 +82,42 @@ export default function Scheduler() {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState<number | null>(null);
+
+  const [gapiLoaded, setGapiLoaded] = useState(false);
+
+  const CALENDAR_ID = process.env.NEXT_PUBLIC_CALENDAR_ID;
+  const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
+  const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+  const SCOPES = "https://www.googleapis.com/auth/calendar.events";
+
+  //You need to remember that a service account is not you. A service account has its own google calendar account. The events are being inserted into its google calendar and not yours.
+  //You should share your calendar with the service account using the service account email address and then use the calendar id from your calendar to insert into.
+  //https://www.youtube.com/watch?v=aD9vU1a7WXo
+  useEffect(() => {
+    const DISCOVERY_DOCS = [
+      "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+    ];
+    const initializeGapi = () => {
+      gapi.load("client:auth2", () => {
+        gapi.client
+          .init({
+            apiKey: API_KEY,
+            clientId: CLIENT_ID,
+            discoveryDocs: DISCOVERY_DOCS,
+            scope: SCOPES,
+          })
+          .then(() => {
+            setGapiLoaded(true);
+            console.log("gapi initialized");
+          })
+          .catch((error) => {
+            console.error("Error initializing gapi", error);
+          });
+      });
+    };
+
+    initializeGapi();
+  }, [API_KEY, CLIENT_ID, SCOPES]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -110,6 +157,9 @@ export default function Scheduler() {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     // Function left empty intentionally
+
+    //##############
+
     handleCloseModal();
     toast({
       title: "Event added",
@@ -117,10 +167,66 @@ export default function Scheduler() {
     });
   }
 
+  const handleClick: () => void = () => {
+    if (gapiLoaded) {
+      gapi.auth2
+        .getAuthInstance()
+        .signIn()
+        .then(() => {
+          console.log("User signed in");
+          gapi.client.load("calendar", "v3", () =>
+            console.log("Calendar API loaded")
+          );
+
+          const event: Event = {
+            summary: "Google I/O 2015",
+            location: "800 Howard St., San Francisco, CA 94103",
+            description:
+              "A chance to hear more about Google's developer products.",
+            start: {
+              dateTime: "2024-08-29T09:00:00+08:00",
+              timeZone: "Asia/Manila",
+            },
+            end: {
+              dateTime: "2024-08-29T17:00:00+08:00",
+              timeZone: "Asia/Manila",
+            },
+            recurrence: ["RRULE:FREQ=DAILY;COUNT=3"],
+            attendees: [
+              { email: "lpage@example.com" },
+              { email: "sbrin@example.com" },
+            ],
+            reminders: {
+              useDefault: false,
+              overrides: [
+                { method: "email", minutes: 24 * 60 },
+                { method: "popup", minutes: 10 },
+              ],
+            },
+          };
+
+          // Use any to avoid TypeScript errors
+          (gapi.client as any).calendar.events
+            .insert({
+              calendarId: CALENDAR_ID,
+              resource: event,
+            })
+            .then((response: any) => {
+              console.log("Event created:", response);
+            })
+            .catch((error: any) => {
+              console.error("Error creating event", error);
+            });
+        });
+    } else {
+      console.error("gapi not loaded yet");
+    }
+  };
+
   return (
     <>
       {/* REMOVE THE GOOGLE SIGN IN IF NEEDED */}
-      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID || ""}>
+      {/* <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID || ""}>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             console.log(credentialResponse);
@@ -131,8 +237,12 @@ export default function Scheduler() {
           // useOneTap
           // auto_select
         />
-      </GoogleOAuthProvider>
+      </GoogleOAuthProvider> */}
       {/* REMOVE THE GOOGLE SIGN IN IF NEEDED */}
+
+      <button onClick={handleClick} disabled={!gapiLoaded}>
+        Add Event
+      </button>
       <FullCalendar
         plugins={[
           dayGridPlugin,

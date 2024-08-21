@@ -45,6 +45,7 @@ const FormSchema = z.object({
 });
 
 interface Event {
+  id?: string; // Add this line to include the id
   summary: string;
   location?: string;
   description?: string;
@@ -119,9 +120,72 @@ export default function Scheduler() {
     setShowModal(true);
   }
 
-  function addEvent(data: DropArg) {
-    // Function left empty intentionally
-  }
+  // function addEvent(data: DropArg) {
+  //   // Function left empty intentionally
+  // }
+
+  // const listEvents = async (): Promise<void> => {
+  //   let response;
+  //   try {
+  //     const request = {
+  //       calendarId: CALENDAR_ID,
+  //       // timeMin: new Date().toISOString(),
+  //       showDeleted: false,
+  //       singleEvents: true,
+  //       // maxResults: 10,
+  //       orderBy: "startTime",
+  //     };
+  //     response = await (gapi.client as any).calendar.events.list(
+  //       request as any
+  //     );
+  //   } catch (err) {
+  //     const errorMessage = (err as Error).message;
+  //     document.getElementById("content")!.innerText = errorMessage;
+  //     return;
+  //   }
+
+  //   const events = response.result.items;
+  //   if (!events || events.length === 0) {
+  //     document.getElementById("content")!.innerText = "No events found.";
+  //     return;
+  //   }
+
+  //   // Flatten to string to display
+  //   const output = events.reduce(
+  //     (str: string, event: any) =>
+  //       `${str}${event.summary} (${
+  //         event.start.dateTime || event.start.date
+  //       }) - ID: ${event.id}\n`,
+  //     "Events:\n"
+  //   );
+  //   document.getElementById("content")!.innerText = output;
+  // };
+
+  const listEvents = async (eventId: string): Promise<void> => {
+    let response;
+    try {
+      const request = {
+        calendarId: CALENDAR_ID,
+        eventId: eventId,
+      };
+      response = await (gapi.client as any).calendar.events.get(request as any);
+    } catch (err) {
+      const errorMessage = (err as Error).message;
+      document.getElementById("content")!.innerText = errorMessage;
+      return;
+    }
+
+    const event = response.result;
+    if (!event) {
+      document.getElementById("content")!.innerText = "Event not found.";
+      return;
+    }
+
+    const output = `${event.summary} (${
+      event.start.dateTime || event.start.date
+    }) - ID: ${event.id}\n`;
+    document.getElementById("content")!.innerText = output;
+  };
 
   function handleDeleteModal(data: { event: { id: string } }) {
     setShowDeleteModal(true);
@@ -196,9 +260,67 @@ export default function Scheduler() {
     }
   }
 
+  async function handleEditEvent(
+    eventId: string,
+    data: z.infer<typeof FormSchema>
+  ) {
+    try {
+      if (gapiLoaded) {
+        await gapi.auth2.getAuthInstance().signIn();
+
+        const updatedEvent: Partial<Event> = {
+          summary: data.title,
+          description: data.description,
+          start: {
+            dateTime: data.startDateTime.toISOString(),
+            timeZone: "Asia/Manila",
+          },
+          end: {
+            dateTime: data.endDateTime.toISOString(),
+            timeZone: "Asia/Manila",
+          },
+        };
+
+        const response = await (gapi.client as any).calendar.events.patch({
+          calendarId: CALENDAR_ID,
+          eventId: eventId,
+          resource: updatedEvent,
+        });
+
+        if (response.status === 200) {
+          setAllEvents((prev) =>
+            prev.map((event) =>
+              event.id === eventId ? { ...event, ...updatedEvent } : event
+            )
+          );
+          toast({
+            title: "Event Updated",
+            description: "Your event has been successfully updated.",
+          });
+          handleCloseModal();
+        } else {
+          throw new Error("Failed to update event.");
+        }
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
+      toast({
+        title: "Error",
+        description: (error as Error).message || "Something went wrong.",
+        variant: "destructive",
+      });
+    }
+  }
+
   return (
     <>
       {/* <button onClick={handleClick} disabled={!gapiLoaded}> Add Event</button> */}
+
+      {/* <button onClick={listEvents} disabled={!gapiLoaded}>
+        List Events
+      </button> */}
+      <div id="content"></div>
+
       <FullCalendar
         plugins={[
           dayGridPlugin,
@@ -223,10 +345,11 @@ export default function Scheduler() {
         selectable={true}
         selectMirror={true}
         dateClick={handleDateClick}
-        drop={(data) => addEvent(data)}
+        // drop={(data) => addEvent(data)}
         showNonCurrentDates={false}
         eventClick={(data) => {
           data.jsEvent.preventDefault();
+          listEvents(data.event.id);
           handleDeleteModal(data);
         }}
       />

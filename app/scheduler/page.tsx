@@ -10,7 +10,7 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
+import { FaTrashAlt } from "react-icons/fa";
 import {
   Form,
   FormControl,
@@ -68,8 +68,8 @@ interface Event {
 export default function Scheduler() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [idToDelete, setIdToDelete] = useState<number | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
   const [gapiLoaded, setGapiLoaded] = useState(false);
 
@@ -188,18 +188,48 @@ export default function Scheduler() {
   };
 
   function handleDeleteModal(data: { event: { id: string } }) {
-    setShowDeleteModal(true);
-    setIdToDelete(Number(data.event.id));
+    setShowEditModal(true);
+    setIdToDelete(data.event.id); // Set event ID as string
   }
 
   function handleDelete() {
-    // Function left empty intentionally
+    if (!idToDelete) {
+      console.error("No event ID to delete.");
+      return;
+    }
+
+    const request = {
+      calendarId: CALENDAR_ID,
+      eventId: idToDelete.toString(),
+    };
+
+    (gapi.client as any).calendar.events
+      .delete(request)
+      .then(() => {
+        console.log("Event deleted successfully.");
+        toast({
+          title: "Event Deleted",
+          description: "The event has been successfully deleted.",
+        });
+        setShowEditModal(false);
+        setIdToDelete(null);
+        // Optionally, refresh the calendar or event list here
+        listEvents(request.eventId); // Refresh the events list
+      })
+      .catch((err: Error) => {
+        console.error("Error deleting event: ", err.message);
+        toast({
+          title: "Error",
+          description: "Failed to delete the event. Please try again.",
+          variant: "destructive",
+        });
+      });
   }
 
   function handleCloseModal() {
     setShowModal(false);
     form.reset();
-    setShowDeleteModal(false);
+    setShowEditModal(false);
     setIdToDelete(null);
   }
 
@@ -439,22 +469,94 @@ export default function Scheduler() {
           </Form>
         </DialogContent>
       </Dialog>
-      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+      <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Event</DialogTitle>
+            <DialogTitle className="flex justify-between">
+              <div>Update Event</div>
+              <div>
+                <FaTrashAlt onClick={handleDelete} />
+              </div>
+            </DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this event?
+              Please enter the event details below.
             </DialogDescription>
           </DialogHeader>
-          <div className="flex justify-end space-x-2">
-            <Button variant="destructive" onClick={handleDelete}>
-              Delete
-            </Button>
-            <Button variant="secondary" onClick={handleCloseModal}>
-              Cancel
-            </Button>
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Event Title</FormLabel>
+                    <FormControl>
+                      <Input {...field} required placeholder="Name of Event" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="startDateTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Start Time</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="datetime-local"
+                        value={format(field.value, "yyyy-MM-dd'T'HH:mm")}
+                        onChange={(e) =>
+                          field.onChange(new Date(e.target.value))
+                        }
+                        required
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endDateTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>End Time</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="datetime-local"
+                        value={format(
+                          field.value ?? form.getValues("startDateTime"),
+                          "yyyy-MM-dd'T'HH:mm"
+                        )}
+                        onChange={(e) =>
+                          field.onChange(new Date(e.target.value))
+                        }
+                        required
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Optional description" />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end space-x-2">
+                <Button type="submit">Update Event</Button>
+                <Button variant="secondary" onClick={handleCloseModal}>
+                  Cancel
+                </Button>
+              </div>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </>

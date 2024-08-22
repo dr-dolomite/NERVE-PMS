@@ -1,7 +1,5 @@
 "use client";
-
 import * as z from "zod"
-
 import {
     useTransition,
     useState
@@ -9,9 +7,11 @@ import {
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-import Link from "next/link"
+// import Link from "next/link"
 
 import { LoginSchema } from "@/schemas"
+
+import Social from "@/components/auth/social"
 
 import {
     Form,
@@ -58,11 +58,12 @@ const LoginPage = () => {
         startTransition(() => {
             login(values)
                 .then((data) => {
-                    setError(data.error);
-                    setSuccess(data.success);
+                    setError(data?.error ?? "");
+                    setSuccess(data?.success ?? "");
                 })
         });
     }
+
     return (
         <Card className="mx-auto max-w-lg p-4">
             <CardHeader>
@@ -127,11 +128,11 @@ const LoginPage = () => {
                         <Button type="submit" className="w-full my-button-blue" disabled={isPending} >
                             Login
                         </Button>
-                        <Button variant="outline" className="w-full">
-                            Login with Google
-                        </Button>
+                        
                     </form>
                 </Form>
+
+                <Social />
 
                 <div className="mt-4 text-center text-sm">
                     <BackButton href="/register" label="Don&apos;t have an account?" />

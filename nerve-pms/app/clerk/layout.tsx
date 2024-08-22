@@ -52,30 +52,19 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                     <div className="flex-1">
                         <nav className="grid items-start lg:space-y-2 px-2 lg:py-6 py-2 text-lg font-medium lg:px-4">
                             <Link
-                                href="/doctor/dashboard/patient"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/doctor/dashboard/patient" || pathname == "/doctor/dashboard/patient/diagnosis" || pathname == "/doctor/dashboard/patient/lab-request" || pathname == "/doctor/dashboard/patient/medical-cert" || pathname == "/doctor/dashboard/patient/prescription" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary"}`}
+                                href="/clerk/dashboard"
+                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/clerk/dashboard" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary"}`}
                             >
                                 <Home className="h-5 w-5" />
                                 Dashboard
                             </Link>
 
                             <Link
-                                href="/doctor/records"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/doctor/records" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
+                                href="/clerk/records"
+                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/clerk/records" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
                             >
                                 <FileText className="h-5 w-5" />
                                 Records
-                            </Link>
-
-                            <Link
-                                href="/doctor/calendar"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/doctor/calendar" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
-                            >
-                                <Calendar className="h-5 w-5" />
-                                Calendar
-                                <Badge className="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full background-pink hover:bg-[#f05c75]">
-                                    6
-                                </Badge>
                             </Link>
                         </nav>
                     </div>

@@ -167,7 +167,7 @@ const Dashboard = ({ children }: { children: ReactNode }) => {
         </h1>
         <Card x-chunk="dashboard-01-chunk-3" className="rounded-xl bg-white p-6 pt-8" >
           <CardContent className="2xl:grid 2xl:grid-cols-4 2xl:grid-flow-row flex flex-col gap-y-12 gap-6">
-            <div className="2xl:grid 2xl:grid-rows-5 2xl:grid-flow-col 2xl:col-span-1 flex flex-col 2xl:gap-4 gap-8">
+            <div className="lg:flex lg:flex-col lg:gap-y-8 flex flex-col 2xl:gap-4 gap-8">
               <div className="flex items-center gap-4 2xl:row-span-1">
                 <Avatar className="hidden h-20 w-20 sm:flex">
                   <AvatarImage src="/avatars/01.png" alt="Avatar" />
@@ -187,6 +187,7 @@ const Dashboard = ({ children }: { children: ReactNode }) => {
 
               <div className="2xl:row-span-4 2xl:text-md text-sm 2xl:mt-6">
                 <ul className="text-dark-blue font-semibold xl:text-base text-md 2xl:leading-5 leading-4 grid 2xl:grid-cols-1 grid-cols-2 gap-4 grid-flow-row">
+                  {/* <li>Status: <span className="text-muted-foreground font-normal ml-3">New Patient</span></li> */}
                   <li>Age: <span className="text-muted-foreground font-normal ml-3">25</span></li>
                   <li>Sex: <span className="text-muted-foreground font-normal ml-3">Female</span></li>
                   <li>City: <span className="text-muted-foreground font-normal ml-3">Iloilo City</span></li>
@@ -320,52 +321,7 @@ const Dashboard = ({ children }: { children: ReactNode }) => {
                   </CardContent>
                 </Card>
               </div>
-
               {children}
-
-              {/* <div>
-                <div className="flex flex-row gap-x-8">
-                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-8 2xl:py-6">
-                    <Link href="/doctor/dashboards/patient/diagnosis">
-                    + Diagnosis
-                    </Link>
-                  </Button>
-
-                  <Button className="bg-gradient-to-r from-[#2F80ED] to-[#37C9D9] 2xl:text-lg 2xl:px-8 2xl:py-6">
-                    + Add Certificate
-                  </Button>
-                </div>
-              </div> */}
-
-              {/* <div>
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>Diagnosis</AccordionTrigger>
-                    <AccordionContent>
-                      Display present and past diagnosis of the patient.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger>Patient Medical History</AccordionTrigger>
-                    <AccordionContent>
-                      Display the patient&apos;s medical history.
-                    </AccordionContent>
-                  </AccordionItem>
-                  <AccordionItem value="item-3">
-                    <AccordionTrigger>Medical Lab Results</AccordionTrigger>
-                    <AccordionContent>
-                      Display the patient&apos;s medical lab results.
-                    </AccordionContent>
-                    <AccordionItem value="item-4">
-                      <AccordionTrigger>Prescription History</AccordionTrigger>
-                      <AccordionContent>
-                        Display the patient&apos;s prescription history.
-                      </AccordionContent>
-                    </AccordionItem>
-                  </AccordionItem>
-                </Accordion>
-              </div> */}
-
             </div>
           </CardContent>
         </Card>

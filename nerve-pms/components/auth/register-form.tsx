@@ -29,6 +29,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 
+import Social from "@/components/auth/social"
+
 import { RegisterSchema } from "@/schemas"
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
@@ -172,12 +174,9 @@ const RegisterForm = () => {
                             <Button type="submit" className="w-full my-button-blue">
                                 Create an account
                             </Button>
-                            <Button variant="outline" className="w-full">
-                                Sign up with Google
-                            </Button>
-
                         </form>
                     </Form>
+                    <Social />
                     <div className="mt-4 text-center text-sm">
                         <BackButton href="/" label="Already have an account?" />
                     </div>

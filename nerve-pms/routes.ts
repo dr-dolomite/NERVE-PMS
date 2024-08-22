@@ -7,6 +7,7 @@ export const publicRoutes = [
 export const authRoutes = [
     "/",
     "/register",
+    "/error",
 ];
 
 // These prefix for API authentication routes

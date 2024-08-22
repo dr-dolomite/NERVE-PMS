@@ -191,7 +191,6 @@ export default function Scheduler() {
     setShowEditModal(true);
     setIdToDelete(data.event.id); // Set event ID as string
   }
-
   function handleDelete() {
     if (!idToDelete) {
       console.error("No event ID to delete.");
@@ -200,7 +199,7 @@ export default function Scheduler() {
 
     const request = {
       calendarId: CALENDAR_ID,
-      eventId: idToDelete.toString(),
+      eventId: idToDelete, // Use the eventId directly
     };
 
     (gapi.client as any).calendar.events
@@ -211,10 +210,9 @@ export default function Scheduler() {
           title: "Event Deleted",
           description: "The event has been successfully deleted.",
         });
+        setAllEvents((prev) => prev.filter((event) => event.id !== idToDelete));
         setShowEditModal(false);
         setIdToDelete(null);
-        // Optionally, refresh the calendar or event list here
-        listEvents(request.eventId); // Refresh the events list
       })
       .catch((err: Error) => {
         console.error("Error deleting event: ", err.message);
@@ -291,7 +289,7 @@ export default function Scheduler() {
   }
 
   async function handleEditEvent(
-    eventId: string,
+    eventId: string, // Use the eventId directly for editing
     data: z.infer<typeof FormSchema>
   ) {
     try {
@@ -313,7 +311,7 @@ export default function Scheduler() {
 
         const response = await (gapi.client as any).calendar.events.patch({
           calendarId: CALENDAR_ID,
-          eventId: eventId,
+          eventId: eventId, // Use the retrieved eventId for the patch request
           resource: updatedEvent,
         });
 
@@ -379,7 +377,7 @@ export default function Scheduler() {
         showNonCurrentDates={false}
         eventClick={(data) => {
           data.jsEvent.preventDefault();
-          listEvents(data.event.id);
+          // listEvents(data.event.id);
           handleDeleteModal(data);
         }}
       />

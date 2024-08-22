@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "axios"; // Assuming you're using Axios for API requests
 
 import { gapi } from "gapi-script";
 
@@ -119,32 +120,6 @@ export default function Scheduler() {
     form.setValue("endDateTime", arg.date); // Set endDateTime to the same date
     setShowModal(true);
   }
-
-  // const listEvents = async (eventId: string): Promise<void> => {
-  //   let response;
-  //   try {
-  //     const request = {
-  //       calendarId: CALENDAR_ID,
-  //       eventId: eventId,
-  //     };
-  //     response = await (gapi.client as any).calendar.events.get(request as any);
-  //   } catch (err) {
-  //     const errorMessage = (err as Error).message;
-  //     document.getElementById("content")!.innerText = errorMessage;
-  //     return;
-  //   }
-
-  //   const event = response.result;
-  //   if (!event) {
-  //     document.getElementById("content")!.innerText = "Event not found.";
-  //     return;
-  //   }
-
-  //   const output = `${event.summary} (${
-  //     event.start.dateTime || event.start.date
-  //   }) - ID: ${event.id}\n`;
-  //   document.getElementById("content")!.innerText = output;
-  // };
 
   //DELETE EVENT
   function handleDelete() {
@@ -332,6 +307,45 @@ export default function Scheduler() {
     setShowEditModal(true);
   }
 
+  // Event handler for drag-and-drop
+  const handleEventDrop = async (eventDropInfo: any) => {
+    const { event } = eventDropInfo;
+    const eventId = event.id;
+    const updatedStart = event.start.toISOString();
+    const updatedEnd = event.end ? event.end.toISOString() : updatedStart;
+
+    try {
+      const response = await axios.patch(
+        `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events/${eventId}`,
+        {
+          start: { dateTime: updatedStart },
+          end: { dateTime: updatedEnd },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${gapi.auth.getToken().access_token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast({
+          title: "Success",
+          description: "Event updated successfully in Google Calendar!",
+          variant: "default",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating event in Google Calendar:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update event in Google Calendar.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <>
       <FullCalendar
@@ -355,6 +369,7 @@ export default function Scheduler() {
         nowIndicator={true}
         editable={true}
         droppable={true}
+        eventDrop={handleEventDrop} // Add this line for drag-and-drop handling
         selectable={true}
         selectMirror={true}
         dateClick={handleDateClick}

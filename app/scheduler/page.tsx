@@ -120,77 +120,33 @@ export default function Scheduler() {
     setShowModal(true);
   }
 
-  // function addEvent(data: DropArg) {
-  //   // Function left empty intentionally
-  // }
-
-  // const listEvents = async (): Promise<void> => {
+  // const listEvents = async (eventId: string): Promise<void> => {
   //   let response;
   //   try {
   //     const request = {
   //       calendarId: CALENDAR_ID,
-  //       // timeMin: new Date().toISOString(),
-  //       showDeleted: false,
-  //       singleEvents: true,
-  //       // maxResults: 10,
-  //       orderBy: "startTime",
+  //       eventId: eventId,
   //     };
-  //     response = await (gapi.client as any).calendar.events.list(
-  //       request as any
-  //     );
+  //     response = await (gapi.client as any).calendar.events.get(request as any);
   //   } catch (err) {
   //     const errorMessage = (err as Error).message;
   //     document.getElementById("content")!.innerText = errorMessage;
   //     return;
   //   }
 
-  //   const events = response.result.items;
-  //   if (!events || events.length === 0) {
-  //     document.getElementById("content")!.innerText = "No events found.";
+  //   const event = response.result;
+  //   if (!event) {
+  //     document.getElementById("content")!.innerText = "Event not found.";
   //     return;
   //   }
 
-  //   // Flatten to string to display
-  //   const output = events.reduce(
-  //     (str: string, event: any) =>
-  //       `${str}${event.summary} (${
-  //         event.start.dateTime || event.start.date
-  //       }) - ID: ${event.id}\n`,
-  //     "Events:\n"
-  //   );
+  //   const output = `${event.summary} (${
+  //     event.start.dateTime || event.start.date
+  //   }) - ID: ${event.id}\n`;
   //   document.getElementById("content")!.innerText = output;
   // };
 
-  const listEvents = async (eventId: string): Promise<void> => {
-    let response;
-    try {
-      const request = {
-        calendarId: CALENDAR_ID,
-        eventId: eventId,
-      };
-      response = await (gapi.client as any).calendar.events.get(request as any);
-    } catch (err) {
-      const errorMessage = (err as Error).message;
-      document.getElementById("content")!.innerText = errorMessage;
-      return;
-    }
-
-    const event = response.result;
-    if (!event) {
-      document.getElementById("content")!.innerText = "Event not found.";
-      return;
-    }
-
-    const output = `${event.summary} (${
-      event.start.dateTime || event.start.date
-    }) - ID: ${event.id}\n`;
-    document.getElementById("content")!.innerText = output;
-  };
-
-  function handleDeleteModal(data: { event: { id: string } }) {
-    setShowEditModal(true);
-    setIdToDelete(data.event.id); // Set event ID as string
-  }
+  //DELETE EVENT
   function handleDelete() {
     if (!idToDelete) {
       console.error("No event ID to delete.");
@@ -231,6 +187,7 @@ export default function Scheduler() {
     setIdToDelete(null);
   }
 
+  // CREATE EVENT
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       if (gapiLoaded) {
@@ -288,12 +245,41 @@ export default function Scheduler() {
     }
   }
 
-  async function handleEditEvent(
-    eventId: string, // Use the eventId directly for editing
-    data: z.infer<typeof FormSchema>
-  ) {
+  //EDIT EVENT
+  async function fetchEventData(eventId: string) {
     try {
       if (gapiLoaded) {
+        await gapi.auth2.getAuthInstance().signIn();
+
+        const request = {
+          calendarId: CALENDAR_ID,
+          eventId: eventId,
+        };
+
+        const response = await (gapi.client as any).calendar.events.get(
+          request
+        );
+        const event = response.result;
+
+        if (event) {
+          form.setValue("title", event.summary || "");
+          form.setValue("startDateTime", new Date(event.start.dateTime));
+          form.setValue("endDateTime", new Date(event.end.dateTime));
+          form.setValue("description", event.description || "");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching event data:", error);
+      toast({
+        title: "Error",
+        description: (error as Error).message || "Failed to fetch event data.",
+        variant: "destructive",
+      });
+    }
+  }
+  async function handleEditEvent(data: z.infer<typeof FormSchema>) {
+    try {
+      if (gapiLoaded && idToDelete) {
         await gapi.auth2.getAuthInstance().signIn();
 
         const updatedEvent: Partial<Event> = {
@@ -311,14 +297,14 @@ export default function Scheduler() {
 
         const response = await (gapi.client as any).calendar.events.patch({
           calendarId: CALENDAR_ID,
-          eventId: eventId, // Use the retrieved eventId for the patch request
+          eventId: idToDelete, // Use the eventId for the patch request
           resource: updatedEvent,
         });
 
         if (response.status === 200) {
           setAllEvents((prev) =>
             prev.map((event) =>
-              event.id === eventId ? { ...event, ...updatedEvent } : event
+              event.id === idToDelete ? { ...event, ...updatedEvent } : event
             )
           );
           toast({
@@ -340,15 +326,14 @@ export default function Scheduler() {
     }
   }
 
+  function handleEditModal(data: { event: { id: string } }) {
+    setIdToDelete(data.event.id); // Set event ID as string
+    fetchEventData(data.event.id); // Fetch event data to populate the form
+    setShowEditModal(true);
+  }
+
   return (
     <>
-      {/* <button onClick={handleClick} disabled={!gapiLoaded}> Add Event</button> */}
-
-      {/* <button onClick={listEvents} disabled={!gapiLoaded}>
-        List Events
-      </button> */}
-      <div id="content"></div>
-
       <FullCalendar
         plugins={[
           dayGridPlugin,
@@ -373,12 +358,10 @@ export default function Scheduler() {
         selectable={true}
         selectMirror={true}
         dateClick={handleDateClick}
-        // drop={(data) => addEvent(data)}
         showNonCurrentDates={false}
         eventClick={(data) => {
           data.jsEvent.preventDefault();
-          // listEvents(data.event.id);
-          handleDeleteModal(data);
+          handleEditModal(data);
         }}
       />
       <Dialog open={showModal} onOpenChange={setShowModal}>
@@ -497,44 +480,65 @@ export default function Scheduler() {
               <FormField
                 control={form.control}
                 name="startDateTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Time</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="datetime-local"
-                        value={format(field.value, "yyyy-MM-dd'T'HH:mm")}
-                        onChange={(e) =>
-                          field.onChange(new Date(e.target.value))
-                        }
-                        required
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const dateValue =
+                    field.value instanceof Date ? field.value : new Date();
+
+                  // Check if the dateValue is valid before formatting
+                  const formattedValue = !isNaN(dateValue.getTime())
+                    ? format(dateValue, "yyyy-MM-dd'T'HH:mm")
+                    : "";
+
+                  return (
+                    <FormItem>
+                      <FormLabel>Start Time</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="datetime-local"
+                          value={formattedValue}
+                          onChange={(e) => {
+                            const newDate = new Date(e.target.value);
+                            field.onChange(newDate);
+                          }}
+                          required
+                        />
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
               />
+
               <FormField
                 control={form.control}
                 name="endDateTime"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>End Time</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="datetime-local"
-                        value={format(
-                          field.value ?? form.getValues("startDateTime"),
-                          "yyyy-MM-dd'T'HH:mm"
-                        )}
-                        onChange={(e) =>
-                          field.onChange(new Date(e.target.value))
-                        }
-                        required
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                render={({ field }) => {
+                  const dateValue =
+                    field.value instanceof Date ? field.value : new Date();
+
+                  // Check if the dateValue is valid before formatting
+                  const formattedValue = !isNaN(dateValue.getTime())
+                    ? format(dateValue, "yyyy-MM-dd'T'HH:mm")
+                    : "";
+
+                  return (
+                    <FormItem>
+                      <FormLabel>End Time</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="datetime-local"
+                          value={formattedValue}
+                          onChange={(e) => {
+                            const newDate = new Date(e.target.value);
+                            field.onChange(newDate);
+                          }}
+                          required
+                        />
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
               />
+
               <FormField
                 control={form.control}
                 name="description"
@@ -548,7 +552,18 @@ export default function Scheduler() {
                 )}
               />
               <div className="flex justify-end space-x-2">
-                <Button type="submit">Update Event</Button>
+                {/* <Button type="submit">Update Event</Button> */}
+
+                <Button
+                  type="button"
+                  onClick={() => {
+                    const formData = form.getValues(); // Get current form values
+                    handleEditEvent(formData);
+                  }}
+                >
+                  Save Changes
+                </Button>
+
                 <Button variant="secondary" onClick={handleCloseModal}>
                   Cancel
                 </Button>

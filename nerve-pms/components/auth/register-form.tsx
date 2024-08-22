@@ -178,7 +178,7 @@ const RegisterForm = () => {
                     </Form>
                     <Social />
                     <div className="mt-4 text-center text-sm">
-                        <BackButton href="/" label="Already have an account?" />
+                        <BackButton href="/login" label="Already have an account?" />
                     </div>
                 </CardContent>
             </Card>

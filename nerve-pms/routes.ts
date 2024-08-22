@@ -1,11 +1,12 @@
 // These routes are public and do not require authentication
 export const publicRoutes = [
     "/",
+    "/new-verification",
 ];
 
 // These routes are used for authentication
 export const authRoutes = [
-    "/",
+    "/login",
     "/register",
     "/error",
 ];

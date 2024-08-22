@@ -65,13 +65,13 @@ const LoginPage = () => {
                 .then((data) => {
                     setError(data?.error);
                     // TODO: for 2FA
-                    // setSuccess(data?.success);
+                    setSuccess(data?.success);
                 })
         });
     }
 
     return (
-        <Card className="mx-auto max-w-lg p-4">
+        <Card className="mx-auto p-4 max-w-lg w-full">
             <CardHeader>
                 <CardTitle className="text-2xl">Login to Nerve</CardTitle>
                 <CardDescription>

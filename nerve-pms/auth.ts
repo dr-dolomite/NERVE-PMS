@@ -24,7 +24,7 @@ export const {
     signOut,
 } = NextAuth({
     pages: {
-        signIn: "/",
+        signIn: "/login",
         error: "/error",
     },
     events: {
@@ -36,16 +36,21 @@ export const {
         }
     },
     callbacks: {
-        // async signIn({ user }) {
+        async signIn({ user, account }) {
+            console.log({ user, account })
 
-        //     const existingUser = await getUserById(user.id);
+            // Allow Oauth without email verification
+            if (account?.provider !== "credentials") return true;
 
-        //     if(!existingUser || !existingUser.emailVerified) {
-        //         return false;
-        //     }
+            const existingUser = await getUserById(user.id);
 
-        //     return true;
-        // },
+            // Prevent sign in if email is not verified
+            if (!existingUser?.emailVerified) return false;
+
+            // Todo: ADD 2FA
+
+            return true;
+        },
         async session({ token, session }) {
             // console.log({sessionToken: token})
             if (token.sub && session.user) {

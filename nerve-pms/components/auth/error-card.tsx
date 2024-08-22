@@ -12,20 +12,6 @@ import {
 
 const ErrorCard = () => {
   return (
-    // <div>
-    //     {/* To do */}
-    //     <div className='grid grid-cols-1 gap-4 max-w-md'>
-    //         <div className='text-center'>
-    //             <h1 className='text-2xl font-bold'>Error</h1>
-    //             <p className='text-gray-500'>An error occurred while trying to authenticate you.</p>
-    //         </div>
-    //         <div>
-    //             <Link href='/'>
-    //                 <Button className='my-button-blue' size="lg" >Go back</Button>
-    //             </Link>
-    //         </div>
-    //     </div>
-    // </div>
     <div className='flex items-center justify-center h-screen'>
             <Card className='max-w-lg'>
         <CardHeader>

@@ -15,5 +15,5 @@ export const authRoutes = [
 export const apiAuthPrefix = "/api/auth";
 
 // The default redirect path after login
-export const DEFAULT_LOGIN_REDIRECT = "/settings";
+export const DEFAULT_LOGIN_REDIRECT = "/doctor/dashboard/patient";
 

@@ -11,7 +11,7 @@ import Link from "next/link";
 
 type HistoryItem = {
     title: string;
-    content: string;
+    content: string | object;
     value: string;
 };
 
@@ -78,33 +78,45 @@ const allHistories: Histories = {
 
     "04-01-22": [
         {
-            title: "Lab Results",
-            content: "Content here",
+            title: "Vital Signs",
+            content: {
+                "Pulse Rate": "72 bpm",
+                "Body Temperature": "36.5°C",
+                "Blood Pressure": "120/80 mmHg",
+                "Weight": "70 kg",
+                "Oxygen": "98%",
+            },
             value: "item-1",
         },
 
         {
-            title: "S/O",
+            title: "Lab Results",
             content: "Content here",
             value: "item-2",
         },
 
         {
-            title: "Diagnosis",
+            title: "S/O",
             content: "Content here",
             value: "item-3",
         },
 
         {
-            title: "Treatment",
+            title: "Diagnosis",
             content: "Content here",
             value: "item-4",
         },
 
         {
-            title: "Plan",
+            title: "Treatment",
             content: "Content here",
             value: "item-5",
+        },
+
+        {
+            title: "Plan",
+            content: "Content here",
+            value: "item-6",
         },
     ],
 }
@@ -123,7 +135,17 @@ const HistoryPage = ({ params }: { params: { id: string } }) => {
                                 {item.title}
                             </AccordionTrigger>
                             <AccordionContent>
-                                <div>{item.content}</div>
+                                {item.title === "Vital Signs" ? (
+                                    <div>
+                                        {Object.entries(item.content).map(([label, value]) => (
+                                            <div key={label} className="mb-2">
+                                                <strong>{label}:</strong> {value}
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div>{item.content}</div>
+                                )}
                             </AccordionContent>
                         </AccordionItem>
                     ))

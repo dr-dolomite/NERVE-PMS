@@ -1,10 +1,12 @@
-// app/drug_search/__components/DrugSearch.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 
 const DrugSearch = () => {
+  const [selectedDrug, setSelectedDrug] = useState<string>("");
+  const [selectedStrength, setSelectedStrength] = useState<string>("");
+
   useEffect(() => {
     // Load external CSS
     const cssLink = document.createElement("link");
@@ -43,13 +45,29 @@ const DrugSearch = () => {
           function () {
             const drugField = (window as any).$("#rxterms")[0];
             const autocomp = drugField.autocomp;
+            const selectedDrug = drugField.value;
             const strengths =
               autocomp.getSelectedItemData()[0].data["STRENGTHS_AND_FORMS"];
+
             if (strengths) {
               (window as any)
                 .$("#drug_strengths")[0]
                 .autocomp.setListAndField(strengths, "");
+
+              // Set selected drug and strength
+              setSelectedDrug(selectedDrug);
+              setSelectedStrength(""); // Reset selected strength when new drug is selected
             }
+
+            // Event listener for selecting a specific strength
+            (window as any).Def.Autocompleter.Event.observeListSelections(
+              "drug_strengths",
+              function () {
+                const strengthField = (window as any).$("#drug_strengths")[0];
+                const selectedStrength = strengthField.value;
+                setSelectedStrength(selectedStrength);
+              }
+            );
           }
         );
       };
@@ -67,6 +85,14 @@ const DrugSearch = () => {
     <div>
       <Input type="text" id="rxterms" placeholder="Drug name" />
       <Input type="text" id="drug_strengths" placeholder="Strength list" />
+      {selectedDrug && selectedStrength && (
+        <div>
+          <h3>Selected Drug:</h3>
+          <p>{selectedDrug}</p>
+          <h3>Dosage Strength:</h3>
+          <p>{selectedStrength}</p>
+        </div>
+      )}
     </div>
   );
 };

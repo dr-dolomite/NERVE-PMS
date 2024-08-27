@@ -45,9 +45,9 @@ const DrugSearch = () => {
         (window as any).Def.Autocompleter.Event.observeListSelections(
           "rxterms",
           function () {
-            const drugField = (window as any).$("#rxterms")[0];
-            const autocomp = drugField.autocomp;
-            const selectedDrug = drugField.value;
+            const drugField = (window as any).$("#rxterms")[0]; // Get the drug input field
+            const autocomp = drugField.autocomp; // Access the autocomplete instance
+            const selectedDrug = drugField.value; // Get the selected drug name
             const strengths =
               autocomp.getSelectedItemData()[0].data["STRENGTHS_AND_FORMS"];
 
@@ -151,6 +151,7 @@ const DrugSearch = () => {
 
   return (
     <div>
+      {/* Patient Name Input */}
       <Input
         type="text"
         id="patient_name" // ID for the patient name input field
@@ -159,6 +160,7 @@ const DrugSearch = () => {
         onChange={(e) => setPatientName(e.target.value)} // Update state on input change
         className="mb-4"
       />
+      {/* Drug name Search */}
       <Input
         type="text"
         id="rxterms"
@@ -166,6 +168,7 @@ const DrugSearch = () => {
         value={selectedDrug}
         onChange={(e) => setSelectedDrug(e.target.value)}
       />
+      {/* Drug Strength dropdown. Each Drug will have different dosage strengths */}
       <Input
         type="text"
         id="drug_strengths"
@@ -173,36 +176,50 @@ const DrugSearch = () => {
         value={selectedStrength}
         onChange={(e) => setSelectedStrength(e.target.value)}
       />
+
+      {/* Click this to add Drug and Dosage in the Prescription */}
       <Button onClick={handleAddSelection} className="mb-8">
         Add Selection
       </Button>
-      {selectedItems.length > 0 && (
+      {selectedItems.length > 0 && ( // Render the block if there are selected items
         <div>
           <h3 className="font-bold">Selected Drugs and Dosages:</h3>
           <ul>
+            {/* Iterate over selectedItems array to display each drug and its corresponding strength */}
             {selectedItems.map((item, index) => (
               <li key={index}>
+                {/* Display the selected drug name and strength */}
                 {item.drug} - {item.strength}
+                {/* Button to clear the current drug and strength selection */}
+                {/*(delete) the current selection from the list */}
                 <Button
                   onClick={() => handleDeleteSelection(index)}
                   className="ml-2 mb-5"
                 >
-                  Delete
+                  Clear
                 </Button>
               </li>
             ))}
           </ul>
+
+          {/* Button to generate the PDF preview */}
           <Button onClick={handleGeneratePDFPreview} className="mt-4">
             Generate PDF Preview
           </Button>
-          {/* Conditionally render the PDF preview if the URL exists */}
+          {/* Conditionally render the PDF preview section if the PDF URL is available */}
+
           {pdfUrl && (
             <div className="mt-4">
               <h4 className="font-bold">PDF Preview:</h4>
+
+              {/* iframe to display the PDF preview within the UI */}
               <iframe src={pdfUrl} width="100%" height="500px" />
+              {/* Button to download the generated PDF */}
               <Button onClick={handleDownloadPDF} className="mt-4">
                 Download PDF
               </Button>
+
+              {/* Button to cancel the PDF preview, which clears the PDF URL */}
               <Button onClick={() => setPdfUrl(null)} className="ml-2 mt-4">
                 {" "}
                 {/* setPdfUrl(null); // Clear the PDF preview URL */}

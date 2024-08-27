@@ -11,35 +11,31 @@ const DrugSearch = () => {
     { drug: string; strength: string }[]
   >([]); // State to hold an array of selected drug and strength pairs
 
+  const [patientName, setPatientName] = useState<string>(""); // State to hold the patient's name
   const [pdfUrl, setPdfUrl] = useState<string | null>(null); // State to hold the PDF preview URL
 
+  // Effect to load the necessary scripts and CSS for the autocomplete functionality
   useEffect(() => {
-    // Create a link element for the CSS stylesheet
     const cssLink = document.createElement("link");
     cssLink.href =
-      "https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/19.2.4/autocomplete-lhc.min.css"; // URL for the CSS
-    cssLink.rel = "stylesheet"; // Set the relationship to stylesheet
-    document.head.appendChild(cssLink); // Append the CSS link to the document head
+      "https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/19.2.4/autocomplete-lhc.min.css";
+    cssLink.rel = "stylesheet";
+    document.head.appendChild(cssLink);
 
-    // Create a script element for jQuery
-    const jqueryScript = document.createElement("script");
+    const jqueryScript = document.createElement("script"); // Create a script element for the autocomplete functionality
     jqueryScript.src =
-      "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"; // URL for jQuery
-    document.body.appendChild(jqueryScript); // Append the jQuery script to the document body
+      "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js";
+    document.body.appendChild(jqueryScript);
 
-    // Create a script element for the autocomplete functionality
-    const autocompleteScript = document.createElement("script");
+    const autocompleteScript = document.createElement("script"); // Create a script element for the autocomplete functionality
     autocompleteScript.src =
-      "https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/19.2.4/autocomplete-lhc.min.js"; // URL for the autocomplete script
-    document.body.appendChild(autocompleteScript); // Append the autocomplete script to the document body
+      "https://clinicaltables.nlm.nih.gov/autocomplete-lhc-versions/19.2.4/autocomplete-lhc.min.js";
+    document.body.appendChild(autocompleteScript);
 
     // Set up onload event for jQuery script
     jqueryScript.onload = () => {
-      // Set up onload event for the autocomplete script
       autocompleteScript.onload = () => {
-        // Initialize the drug strengths autocomplete
         new (window as any).Def.Autocompleter.Prefetch("drug_strengths", []);
-        // Initialize the drug search autocomplete
         new (window as any).Def.Autocompleter.Search(
           "rxterms",
           "https://clinicaltables.nlm.nih.gov/api/rxterms/v3/search?ef=STRENGTHS_AND_FORMS"
@@ -49,11 +45,11 @@ const DrugSearch = () => {
         (window as any).Def.Autocompleter.Event.observeListSelections(
           "rxterms",
           function () {
-            const drugField = (window as any).$("#rxterms")[0]; // Get the drug input field
-            const autocomp = drugField.autocomp; // Access the autocomplete instance
-            const selectedDrug = drugField.value; // Get the selected drug name
+            const drugField = (window as any).$("#rxterms")[0];
+            const autocomp = drugField.autocomp;
+            const selectedDrug = drugField.value;
             const strengths =
-              autocomp.getSelectedItemData()[0].data["STRENGTHS_AND_FORMS"]; // Get the strengths associated with the selected drug
+              autocomp.getSelectedItemData()[0].data["STRENGTHS_AND_FORMS"];
 
             // If strengths are available, update the strengths autocomplete
             if (strengths) {
@@ -80,19 +76,18 @@ const DrugSearch = () => {
 
     // Cleanup function to remove the appended elements when the component unmounts
     return () => {
-      document.head.removeChild(cssLink); // Remove the CSS link
-      document.body.removeChild(jqueryScript); // Remove the jQuery script
-      document.body.removeChild(autocompleteScript); // Remove the autocomplete script
+      document.head.removeChild(cssLink);
+      document.body.removeChild(jqueryScript);
+      document.body.removeChild(autocompleteScript);
     };
-  }, []); // Empty dependency array means this effect runs once on mount
+  }, []);
 
   // Function to handle adding the selected drug and strength to the list
   const handleAddSelection = () => {
     if (selectedDrug && selectedStrength) {
-      // Check if both drug and strength are selected
       setSelectedItems([
-        ...selectedItems, // Spread the existing items
-        { drug: selectedDrug, strength: selectedStrength }, // Add the new selection
+        ...selectedItems,
+        { drug: selectedDrug, strength: selectedStrength },
       ]);
       setSelectedDrug(""); // Clear the selected drug state
       setSelectedStrength(""); // Clear the selected strength state
@@ -101,30 +96,30 @@ const DrugSearch = () => {
 
   // Function to handle deleting a selected drug and strength
   const handleDeleteSelection = (index: number) => {
-    const newSelectedItems = selectedItems.filter((_, i) => i !== index); // Filter out the item at the specified index
+    const newSelectedItems = selectedItems.filter((_, i) => i !== index);
     setSelectedItems(newSelectedItems); // Update the selected items state
   };
 
+  // Function to generate a PDF preview of the selected drugs and strengths
   const handleGeneratePDFPreview = () => {
     const doc = new jsPDF();
-
-    // Get the current date
     const currentDate = new Date().toLocaleDateString();
 
     // Set the font size for the title
     doc.setFontSize(16);
     doc.text("Selected Drugs and Dosages:", 10, 10);
 
-    // Add the current date below the title
+    // Add the current date and patient's name below the title
     doc.setFontSize(12);
-    doc.text(`Date: ${currentDate}`, 10, 20);
+    doc.text(`Patient: ${patientName}`, 10, 20); // Add patient name
+    doc.text(`Date: ${currentDate}`, 10, 30);
 
     // Add the list of drugs and dosages
     selectedItems.forEach((item, index) => {
       doc.text(
         `${index + 1}. ${item.drug} - ${item.strength}`,
         10,
-        30 + index * 10
+        40 + index * 10
       );
     });
 
@@ -134,11 +129,16 @@ const DrugSearch = () => {
     setPdfUrl(pdfUrl);
   };
 
+  // Function to handle downloading the generated PDF
   const handleDownloadPDF = () => {
     if (pdfUrl) {
       const link = document.createElement("a");
       link.href = pdfUrl;
-      link.download = `selected_drugs_${new Date()
+
+      // Use the patient name in the PDF filename
+      link.download = `${patientName
+        .replace(/\s+/g, "_")
+        .toLowerCase()}_selected_drugs_${new Date()
         .toLocaleDateString()
         .replace(/\//g, "-")}.pdf`;
       link.click();
@@ -153,56 +153,60 @@ const DrugSearch = () => {
     <div>
       <Input
         type="text"
-        id="rxterms" // ID for the drug input field
-        placeholder="Drug name"
-        value={selectedDrug} // Controlled input value
-        onChange={(e) => setSelectedDrug(e.target.value)} // Update state on input change
+        id="patient_name" // ID for the patient name input field
+        placeholder="Name of Patient"
+        value={patientName} // Controlled input value
+        onChange={(e) => setPatientName(e.target.value)} // Update state on input change
+        className="mb-4"
       />
       <Input
         type="text"
-        id="drug_strengths" // ID for the strength input field
+        id="rxterms"
+        placeholder="Drug name"
+        value={selectedDrug}
+        onChange={(e) => setSelectedDrug(e.target.value)}
+      />
+      <Input
+        type="text"
+        id="drug_strengths"
         placeholder="Strength list"
-        value={selectedStrength} // Controlled input value
-        onChange={(e) => setSelectedStrength(e.target.value)} // Update state on input change
+        value={selectedStrength}
+        onChange={(e) => setSelectedStrength(e.target.value)}
       />
       <Button onClick={handleAddSelection} className="mb-8">
-        Add Selection {/* Button to add the selected drug and strength*/}
+        Add Selection
       </Button>
-      {selectedItems.length > 0 && ( // Check if there are any selected items
+      {selectedItems.length > 0 && (
         <div>
-          <h3 className="font-bold">Selected Drugs and Dosages:</h3>{" "}
-          {/* // Header for the selected items list */}
+          <h3 className="font-bold">Selected Drugs and Dosages:</h3>
           <ul>
-            {selectedItems.map(
-              (
-                item,
-                index // Map through selected items to display them
-              ) => (
-                <li key={index}>
-                  {" "}
-                  {/* // Unique key for each list item */}
-                  {item.drug} - {item.strength}{" "}
-                  {/* // Display drug and strength */}
-                  <Button
-                    onClick={() => handleDeleteSelection(index)} // Button to delete the item
-                    className="ml-2 mb-5"
-                  >
-                    Delete
-                  </Button>
-                </li>
-              )
-            )}
+            {selectedItems.map((item, index) => (
+              <li key={index}>
+                {item.drug} - {item.strength}
+                <Button
+                  onClick={() => handleDeleteSelection(index)}
+                  className="ml-2 mb-5"
+                >
+                  Delete
+                </Button>
+              </li>
+            ))}
           </ul>
           <Button onClick={handleGeneratePDFPreview} className="mt-4">
             Generate PDF Preview
           </Button>
-          {/* PDF Preview Section */}
+          {/* Conditionally render the PDF preview if the URL exists */}
           {pdfUrl && (
             <div className="mt-4">
               <h4 className="font-bold">PDF Preview:</h4>
               <iframe src={pdfUrl} width="100%" height="500px" />
               <Button onClick={handleDownloadPDF} className="mt-4">
                 Download PDF
+              </Button>
+              <Button onClick={() => setPdfUrl(null)} className="ml-2 mt-4">
+                {" "}
+                {/* setPdfUrl(null); // Clear the PDF preview URL */}
+                Cancel Preview
               </Button>
             </div>
           )}
@@ -212,4 +216,4 @@ const DrugSearch = () => {
   );
 };
 
-export default DrugSearch; // Export the DrugSearch component for use in other parts of the application
+export default DrugSearch;

@@ -142,3 +142,28 @@
     --grayColor2: #4e4e4e;
   }
 }
+
+/* For red gradient button */
+@layer utilities {
+  @property --redColor1 {
+    syntax: "<color>";
+    initial-value: #FF4B2B;
+    inherits: false;
+  }
+
+  @property --redColor2 {
+    syntax: "<color>";
+    initial-value: #FF416C;
+    inherits: false;
+  }
+
+  .my-button-red {
+    background: linear-gradient(var(--redColor1), var(--redColor2));
+    transition: --redColor1 0.5s ease-in-out, --redColor2 0.5s ease-in-out;
+  }
+
+  .my-button-red:hover {
+    --redColor1: #FF416C;
+    --redColor2: #FF4B2B;
+  }
+}

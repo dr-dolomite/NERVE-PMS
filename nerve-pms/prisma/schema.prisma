@@ -96,8 +96,15 @@ model TwoFactorConfirmation {
 }
 
 // CRUD Models for patients
+
+enum PatientStatus {
+  ACTIVE
+  ARCHIVED
+}
+
 model PatientInformation {
   id String @id @default(cuid()) // This is now the primary key
+  patientStatus PatientStatus @default(ACTIVE)
   name String @unique
   age String
   city String

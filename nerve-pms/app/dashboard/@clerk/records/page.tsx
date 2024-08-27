@@ -1,30 +1,16 @@
-import Image from "next/image"
-import Link from "next/link"
+"use server";
+
 import {
   File,
-  Home,
-  LineChart,
   ListFilter,
   MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
   UserRound,
-  Users2,
+  PlusCircle,
+  Trash2Icon,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+import { Badge } from "@/components/ui/badge";
+
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -43,8 +29,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+
 import {
   Table,
   TableBody,
@@ -59,17 +44,31 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/tabs";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { getPatients } from "@/data/get-patient-info"
+import { deletePatientRecord } from "@/actions/delete-patient-record";
+import DeletePatientIcon from "@/components/delete-patient-icon";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-const RecordsPage = () => {
+interface Patient {
+  name: string;
+  city: string;
+  phone: string | null;
+  patientStatus: string;
+  lastUpdate: Date;
+  lastVisit: Date | null;
+}
+
+const RecordsPage = async () => {
+
+  const patients: Patient[] = await getPatients();
+
+  const onDelete = (name: string) => {
+    deletePatientRecord(name);
+  }
+
   return (
     <div className="grid gap-y-8">
       <div>
@@ -141,12 +140,14 @@ const RecordsPage = () => {
                         <span className="sr-only">Image</span>
                       </TableHead>
                       <TableHead>Name</TableHead>
+                      <TableHead>City</TableHead>
+                      <TableHead>Phone Number</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="hidden md:table-cell">
-                        Visits
+                        Last Visit
                       </TableHead>
                       <TableHead className="hidden md:table-cell">
-                        Created at
+                        Last Update
                       </TableHead>
                       <TableHead>
                         <span className="sr-only">Actions</span>
@@ -154,258 +155,45 @@ const RecordsPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Avatar className="hidden h-20 w-20 sm:flex">
-                          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                          <AvatarFallback>
-                            <UserRound />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        John Vincent
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Recent</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        25
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-07-12 10:42 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Avatar className="hidden h-20 w-20 sm:flex">
-                          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                          <AvatarFallback>
-                            <UserRound />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Kevin Smith
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Recent</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        100
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-10-18 03:21 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Avatar className="hidden h-20 w-20 sm:flex">
-                          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                          <AvatarFallback>
-                            <UserRound />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Stephen King
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Active</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        50
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-11-29 08:15 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Avatar className="hidden h-20 w-20 sm:flex">
-                          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                          <AvatarFallback>
-                            <UserRound />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Peter Parker
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">Archived</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-12-25 11:59 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Avatar className="hidden h-20 w-20 sm:flex">
-                          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                          <AvatarFallback>
-                            <UserRound />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Gwen Stacy
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Active</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        75
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2024-01-01 12:00 AM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Avatar className="hidden h-20 w-20 sm:flex">
-                          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                          <AvatarFallback>
-                            <UserRound />
-                          </AvatarFallback>
-                        </Avatar>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        Tony Stark
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Recent</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        30
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2024-02-14 02:14 PM
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>View</DropdownMenuItem>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                    {patients.map((patient) => (
+                      <TableRow key={patient.name}>
+                        <TableCell className="hidden sm:table-cell">
+                          <Avatar className="hidden h-20 w-20 sm:flex">
+                            <AvatarImage src="missing.png" alt="Avatar" />
+                            <AvatarFallback>
+                              <UserRound />
+                            </AvatarFallback>
+                          </Avatar>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {patient.name}
+                        </TableCell>
+                        <TableCell>
+                          {/* <Badge variant="outline">Recent</Badge> */}
+                          {patient.city}
+                        </TableCell>
+                        <TableCell>
+                          {/* <Badge variant="outline">Recent</Badge> */}
+                          {patient.phone}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={patient.patientStatus === 'ACTIVE' ? 'default' : 'destructive'}>
+                            {patient.patientStatus}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {patient.lastVisit?.toLocaleDateString() ?? "N/A"}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {patient.lastUpdate.toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          {/* TODO */}
+                          <DeletePatientIcon patientName={patient.name} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+
                   </TableBody>
                 </Table>
               </CardContent>

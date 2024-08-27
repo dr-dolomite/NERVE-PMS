@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input"
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { savePatientVitals } from "@/actions/save-patient-vitals";
+import { useToast } from "@/components/ui/use-toast";
 
 const PatientVitalsForm = () => {
     const [error, setError] = useState<string | undefined>("");
@@ -50,6 +51,8 @@ const PatientVitalsForm = () => {
         },
     });
 
+    const { toast } = useToast();
+
     const onSubmit = (values: z.infer<typeof PatientVitalsSchema>) => {
         setError("");
         setSuccess("");
@@ -63,6 +66,13 @@ const PatientVitalsForm = () => {
                     } else {
                         setSuccess(data.success);
                         form.reset();
+                        // After 2 seconds, show a toast message
+                        setTimeout(() => {
+                            toast({
+                                title: "Saved successfully!",
+                                description: "You may now close the form.",
+                            })
+                        }, 2000);
                     }
                 })
                 .catch(() => {
@@ -178,11 +188,11 @@ const PatientVitalsForm = () => {
                     )}
                 />
 
-                <div className="flex flex-col col-span-3 w-[200px] mt-4 gap-y-4 text-center">
+                <div className="flex flex-col col-span-2 mt-4 gap-y-4 text-center">
                     <FormError message={error} />
                     <FormSuccess message={success} />
 
-                    <Button type="submit" className="my-button-blue" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+                    <Button type="submit" className="my-button-blue 2xl:w-[200px]" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
                         Save Patient Vitals
                     </Button>
                 </div>

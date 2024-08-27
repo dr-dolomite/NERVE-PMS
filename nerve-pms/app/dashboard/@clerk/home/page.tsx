@@ -26,7 +26,6 @@ const ClerkDashboardPage = () => {
     const year = currentDate.getFullYear();
     const dayOfMonth = currentDate.getDate();
 
-    const [date, setDate] = useState<Date>()
     const [formStep, setFormStep] = useState<'patientInfo' | 'patientVitals'>('patientInfo')
     const user = useCurrentUser();
 

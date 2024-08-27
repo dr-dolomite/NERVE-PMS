@@ -1,0 +1,18 @@
+"use server";
+
+import { getPatientByName } from "@/data/user";
+import { db } from "@/lib/db";
+
+export const deletePatientRecord = async (name: string) => {
+    const existingPatient = await getPatientByName(name);
+
+    if (!existingPatient) {
+        return { error: "Patient not found." };
+    }
+
+    await db.patientInformation.delete({
+        where: { name }
+    });
+
+    return { success: "Patient record deleted." };
+}

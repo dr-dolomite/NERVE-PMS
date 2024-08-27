@@ -5,6 +5,8 @@ import "./globals.css";
 import { SessionProvider, useSession } from "next-auth/react";
 import { auth } from "@/auth";
 
+import { Toaster } from "@/components/ui/toaster"
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
@@ -25,9 +27,15 @@ export default async function RootLayout({
 
   return (
     <SessionProvider session={session}>
-    <html lang="en">
-      <body className={poppins.className}>{children}</body>
-    </html>
+      <html lang="en">
+        <body className={poppins.className}>
+          <main>
+            {children}
+          </main>
+          <Toaster />
+        </body>
+
+      </html>
     </SessionProvider>
   );
 }

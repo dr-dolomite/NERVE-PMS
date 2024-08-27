@@ -1,15 +1,25 @@
 import { db } from "@/lib/db";
 
-export const getPatientById = async (id: string) => {
-    try {
-        const patientInformation = await db.patientInformation.findUnique({
-            where: {
-                id,
-            },
-        });
+// fetch all patient information from the database but only the name, patient id, last update, and last visit
+export const getPatients = async () => {
+    return await db.patientInformation.findMany({
+        select: {
+            name: true,
+            city: true,
+            phone: true,
+            patientStatus: true,
+            lastUpdate: true,
+            lastVisit: true
+        }
+    });
+};
 
-        return patientInformation;
-    } catch (error) {
-        return null;
-    }
+export const getPatientByName = async (name: string) => {
+    const patientName = await db.patientInformation.findUnique({
+        where: {
+            name
+        }
+    });
+
+    return patientName;
 }

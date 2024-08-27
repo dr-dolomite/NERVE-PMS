@@ -11,6 +11,8 @@ const DrugSearch = () => {
     { drug: string; strength: string }[]
   >([]); // State to hold an array of selected drug and strength pairs
 
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null); // State to hold the PDF preview URL
+
   useEffect(() => {
     // Create a link element for the CSS stylesheet
     const cssLink = document.createElement("link");
@@ -103,7 +105,7 @@ const DrugSearch = () => {
     setSelectedItems(newSelectedItems); // Update the selected items state
   };
 
-  const handleGeneratePDF = () => {
+  const handleGeneratePDFPreview = () => {
     const doc = new jsPDF();
 
     // Get the current date
@@ -126,9 +128,25 @@ const DrugSearch = () => {
       );
     });
 
-    // Save the PDF with the date in the filename
-    const fileName = `selected_drugs_${currentDate.replace(/\//g, "-")}.pdf`;
-    doc.save(fileName);
+    // Create a Blob from the PDF and generate a URL for it
+    const pdfBlob = doc.output("blob");
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    setPdfUrl(pdfUrl);
+  };
+
+  const handleDownloadPDF = () => {
+    if (pdfUrl) {
+      const link = document.createElement("a");
+      link.href = pdfUrl;
+      link.download = `selected_drugs_${new Date()
+        .toLocaleDateString()
+        .replace(/\//g, "-")}.pdf`;
+      link.click();
+
+      // Clean up the object URL after downloading
+      URL.revokeObjectURL(pdfUrl);
+      setPdfUrl(null);
+    }
   };
 
   return (
@@ -175,9 +193,19 @@ const DrugSearch = () => {
               )
             )}
           </ul>
-          <Button onClick={handleGeneratePDF} className="mt-4">
-            Generate PDF
+          <Button onClick={handleGeneratePDFPreview} className="mt-4">
+            Generate PDF Preview
           </Button>
+          {/* PDF Preview Section */}
+          {pdfUrl && (
+            <div className="mt-4">
+              <h4 className="font-bold">PDF Preview:</h4>
+              <iframe src={pdfUrl} width="100%" height="500px" />
+              <Button onClick={handleDownloadPDF} className="mt-4">
+                Download PDF
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

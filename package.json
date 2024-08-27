@@ -40,6 +40,7 @@
     "date-fns": "^3.6.0",
     "gapi-script": "^1.2.0",
     "googleapis": "^142.0.0",
+    "jspdf": "^2.5.1",
     "next": "14.2.4",
     "next-auth": "5.0.0-beta.19",
     "next-themes": "^0.3.0",

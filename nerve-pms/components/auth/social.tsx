@@ -1,16 +1,17 @@
 "use client";
 
 import { signIn } from "next-auth/react";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { DOCTOR_DEFAULT_LOGIN_REDIRECT, CLERK_DEFAULT_LOGIN_REDIRECT } from "@/routes";
 
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui/button";
+import { UserRole } from "@prisma/client";
 
 const Social = () => {
 
   const onClick = (provider: "google") => {
     signIn(provider, {
-      callbackUrl: DEFAULT_LOGIN_REDIRECT,
+      callbackUrl: UserRole.CLERK ? CLERK_DEFAULT_LOGIN_REDIRECT : DOCTOR_DEFAULT_LOGIN_REDIRECT,
     });
   }
 

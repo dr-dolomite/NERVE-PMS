@@ -1,3 +1,4 @@
+"use client";
 import { ReactNode } from "react";
 
 import {
@@ -19,6 +20,8 @@ import {
   AvatarImage
 } from "@/components/ui/avatar"
 
+import { useCurrentUser } from "@/hooks/use-current-user";
+
 
 const Dashboard = ({ children }: { children: ReactNode }) => {
 
@@ -27,14 +30,15 @@ const Dashboard = ({ children }: { children: ReactNode }) => {
   const day = currentDate.toLocaleString('default', { weekday: 'long' });
   const year = currentDate.getFullYear();
   const dayOfMonth = currentDate.getDate();
-
+  const user = useCurrentUser();
+  
 
   return (
     <div className="grid grid-cols-1 gap-6">
       <div className="flex justify-between">
         <div className="flex flex-col items-start">
           <h2 className="text-gray font-medium 2xl:text-lg text-md antialiased">
-            Hi Doc,
+            Hi Doc {user?.name},
           </h2>
           <h1 className="text-primary font-semibold 2xl:text-2xl text-xl antialiased">
             Welcome Back!

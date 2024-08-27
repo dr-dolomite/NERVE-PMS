@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/card"
 
 import { Button } from "@/components/ui/button";
-
 import Link from "next/link";
 
 const data = [
@@ -43,7 +42,6 @@ const data = [
     },
 ]
 
-
 const PatientPage = () => {
 
     const patientInfo = {
@@ -51,6 +49,8 @@ const PatientPage = () => {
         patientStatus: "New Patient",
         recordStatus: true,
     }
+
+    // const role = useCurrentRole();
 
     // onClick function that will show the accordion content for History
 

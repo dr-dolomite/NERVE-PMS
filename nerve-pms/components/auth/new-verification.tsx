@@ -31,6 +31,8 @@ const NewVerificationForm = () => {
     const token = searchParams.get("token");
 
     const onSubmit = useCallback(() => {
+        if (success || error) return;
+
         if (!token) {
             setError("Your email verification token is invalid.");
             return;
@@ -44,7 +46,7 @@ const NewVerificationForm = () => {
             .catch(() => {
                 setError("An error occurred while verifying your email.");
             })
-    }, [token]);
+    }, [token, success, error]);
 
     useEffect(() => {
         onSubmit();
@@ -64,11 +66,13 @@ const NewVerificationForm = () => {
                 <CardContent className="grid grid-cols-1 gap-y-6 justify-center place-items-center">
                     {!success && !error && (
                         <div className="flex items-center justify-center">
-                            <BeatLoader/>
+                            <BeatLoader />
                         </div>
                     )}
                     <FormSuccess message={success} />
-                    <FormError message={error} />
+                    {!success && (
+                        <FormError message={error} />
+                    )}
                     <Link href="/login">
                         <Button className="my-button-blue">Go back to Login</Button>
                     </Link>

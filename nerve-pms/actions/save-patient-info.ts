@@ -26,7 +26,6 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
         email,
     } = validatedFields.data;
 
-    // Parse the birthday string into a Date object
     const parsedBirthday = new Date(birthday);
 
     if (isNaN(parsedBirthday.getTime())) {
@@ -39,7 +38,7 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
         return { error: "Patient already exists." };
     }
 
-    await db.patientInformation.create({
+    const newPatient = await db.patientInformation.create({
         data: {
             name,
             city,
@@ -56,5 +55,5 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
         },
     });
 
-    return { success: "Patient information saved." };
+    return { success: "Patient information saved.", patientId: newPatient.id };
 };

@@ -10,9 +10,13 @@ export const deletePatientRecord = async (name: string) => {
         return { error: "Patient not found." };
     }
 
-    await db.patientInformation.delete({
-        where: { name }
-    });
+    try {
+        await db.patientInformation.delete({
+            where: { name }
+        });
 
-    return { success: "Patient record deleted." };
+        return { success: "Patient record deleted." };
+    } catch (error) {
+        return { error: "Failed to delete patient record. Please try again." };
+    }
 }

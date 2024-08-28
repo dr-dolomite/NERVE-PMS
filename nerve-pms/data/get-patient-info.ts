@@ -23,3 +23,13 @@ export const getPatientByName = async (name: string) => {
 
     return patientName;
 }
+
+export const getPatientById = async (id: string) => {
+    const patientId = await db.patientInformation.findUnique({
+        where: {
+            id
+        }
+    });
+
+    return patientId;
+}

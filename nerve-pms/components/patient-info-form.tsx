@@ -33,15 +33,13 @@ import { Input } from "@/components/ui/input"
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { savePatientInfo } from "@/actions/save-patient-info";
+import Link from "next/link";
 
-interface PatientInformationFormProps {
-    onSuccess?: () => void;
-}
-
-const PatientInformationForm = ({ onSuccess } : PatientInformationFormProps) => {
+const PatientInformationForm = () => {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
+    const [patientId, setPatientId] = useState<string>("");
 
     const form = useForm<z.infer<typeof PatientInformationSchema>>({
         resolver: zodResolver(PatientInformationSchema),
@@ -75,7 +73,7 @@ const PatientInformationForm = ({ onSuccess } : PatientInformationFormProps) => 
                     if (data?.success) {
                         form.reset();
                         setSuccess(data.success);
-                        onSuccess?.();
+                        setPatientId(data.patientId);
                     }
                 })
                 .catch(() => {
@@ -86,7 +84,7 @@ const PatientInformationForm = ({ onSuccess } : PatientInformationFormProps) => 
 
     return (
         <Form {...form}>
-            <form className="grid grid-cols-3 grid-flow-row 2xl:gap-6 gap-4">
+            <form className="grid grid-cols-3 grid-flow-row 2xl:gap-6 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="col-span-2">
                     <FormField
                         control={form.control}
@@ -341,9 +339,20 @@ const PatientInformationForm = ({ onSuccess } : PatientInformationFormProps) => 
                     <FormError message={error} />
                     <FormSuccess message={success} />
 
-                    <Button type="submit" className="my-button-blue" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-                        Save Patient Information
-                    </Button>
+                    {!success && (
+                        <Button type="submit" className="my-button-blue" disabled={isPending}>
+                            Save Patient Information
+                        </Button>
+                    )}
+
+                    {success && (
+                        <Button type="button" asChild className="my-button-blue">
+                            <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}`}>
+                                Add Patient Vitals
+                            </Link>
+                        </Button>
+                    )}
+
                 </div>
             </form>
         </Form>

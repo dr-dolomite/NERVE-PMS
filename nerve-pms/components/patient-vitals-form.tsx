@@ -6,6 +6,7 @@ import {
 } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
 
 import {
     Select,
@@ -17,6 +18,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import Link from "next/link";
 import { PatientVitalsSchema } from "@/schemas";
 
 import {
@@ -27,22 +29,25 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { savePatientVitals } from "@/actions/save-patient-vitals";
-import { useToast } from "@/components/ui/use-toast";
 
 const PatientVitalsForm = () => {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
+    const [vitalSignsid, setVitalSignsid] = useState<string>("");
     const [isPending, startTransition] = useTransition();
+    const searchParams = useSearchParams();
+    const patientId = searchParams.get("patientId");
 
     const form = useForm<z.infer<typeof PatientVitalsSchema>>({
         resolver: zodResolver(PatientVitalsSchema),
         defaultValues: {
+            patientId: patientId ?? undefined,
             pulseRate: 0,
             bodyTemperature: "",
             bloodPressure: "",
@@ -51,7 +56,6 @@ const PatientVitalsForm = () => {
         },
     });
 
-    const { toast } = useToast();
 
     const onSubmit = (values: z.infer<typeof PatientVitalsSchema>) => {
         setError("");
@@ -63,16 +67,12 @@ const PatientVitalsForm = () => {
                     if (data?.error) {
                         form.reset();
                         setError(data.error);
-                    } else {
-                        setSuccess(data.success);
+                    }
+
+                    if (data?.success) {
                         form.reset();
-                        // After 2 seconds, show a toast message
-                        setTimeout(() => {
-                            toast({
-                                title: "Saved successfully!",
-                                description: "You may now close the form.",
-                            })
-                        }, 2000);
+                        setSuccess(data.success);
+                        setVitalSignsid(data.vitalSignsid);
                     }
                 })
                 .catch(() => {
@@ -83,7 +83,7 @@ const PatientVitalsForm = () => {
 
     return (
         <Form {...form}>
-            <form className="grid grid-cols-3 grid-flow-row 2xl:gap-6 gap-4">
+            <form className="grid grid-cols-3 grid-flow-row 2xl:gap-6 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                     control={form.control}
                     name="pulseRate"
@@ -192,9 +192,20 @@ const PatientVitalsForm = () => {
                     <FormError message={error} />
                     <FormSuccess message={success} />
 
-                    <Button type="submit" className="my-button-blue 2xl:w-[200px]" onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-                        Save Patient Vitals
-                    </Button>
+                    {!success && (
+                        <Button type="submit" className="my-button-blue 2xl:w-[200px]" disabled={isPending}>
+                            Save Patient Vitals
+                        </Button>
+                    )}
+
+                    {success && patientId && vitalSignsid && (
+                        <Button type="button" asChild className="my-button-blue">
+                            <Link href={`/dashboard/add-patient-history?patientId=${patientId}&vitalSignsid=${vitalSignsid}`}>
+                                Add Patient History
+                            </Link>
+                        </Button>
+                    )}
+
                 </div>
             </form>
         </Form>

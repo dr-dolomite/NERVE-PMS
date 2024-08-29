@@ -63,3 +63,24 @@ export const getPatientVitalsById = async (id: string) => {
 
     return patientVitals;
 }
+
+export const getAllPatientFollowUpById = async (id: string) => {
+    const patientFollowUp = await db.followUps.findMany({
+        where: {
+            patientId: id
+        },
+    });
+
+    return patientFollowUp;
+}
+
+export const getPatientFollowUpById = async (id: string) => {
+    const patientFollowUp = await db.followUps.findUnique({
+        where: {
+            id
+        }
+    });
+
+    return patientFollowUp;
+}
+

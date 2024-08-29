@@ -7,7 +7,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
 interface PatientHistoryViewPageProps {
     patientId: string;
@@ -15,7 +15,6 @@ interface PatientHistoryViewPageProps {
 
 import { getPatientHistoryById } from "@/data/get-patient-info";
 import { getPatientVitalsById } from "@/data/get-patient-info";
-import { CircleGauge, HeartPulseIcon, TestTubeDiagonal, ThermometerIcon } from "lucide-react";
 import {
     FaThermometerHalf,
     FaHeartbeat,
@@ -27,7 +26,6 @@ import { Separator } from "./ui/separator";
 const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps) => {
     const patientHist = await getPatientHistoryById(patientId);
     const patientVitals = await getPatientVitalsById(patientHist?.vitalSignsid ? patientHist?.vitalSignsid : "");
-    console.log(patientVitals);
 
     return (
         <div className="grid grid-cols-2 grid-flow-row p-4 gap-8">
@@ -121,29 +119,41 @@ const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps
 
             <Separator className="col-span-2" />
 
-            <div className="col-span-1 flex flex-col gap-2">
-                <div className="flex shrink-0">
-                    <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
-                        Chief Complaint:
-                    </Label>
+            <div className="col-span-2 grid 2xl:grid-cols-3 grid-cols-2 grid-flow-row gap-6 gap-x-12">
+                <div className="col-span-1 flex flex-col gap-2">
+                    <div className="flex shrink-0">
+                        <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
+                            Chief Complaint:
+                        </Label>
+                    </div>
+
+                    <p className="text-wrap">
+                        {patientHist?.chiefComplaint}
+                    </p>
                 </div>
 
-                <p className="text-wrap">
-                    {patientHist?.chiefComplaint}
-                </p>
-            </div>
-
-            <div className="col-span-1 flex flex-col gap-2">
-                <div className="flex shrink-0">
-                    <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
-                        Referred By:
-                    </Label>
+                <div className="col-span-1 flex flex-col gap-2">
+                    <div className="flex shrink-0">
+                        <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
+                            Referred By:
+                        </Label>
+                    </div>
+                    <p className="text-wrap">
+                        {patientHist?.referredBy}
+                    </p>
                 </div>
-                <p className="text-wrap">
-                    {patientHist?.referredBy}
-                </p>
-            </div>
 
+                <div className="col-span-1 flex flex-col gap-2">
+                    <div className="flex shrink-0">
+                        <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
+                            Plan
+                        </Label>
+                    </div>
+                    <p className="text-wrap uppercase">
+                        {patientHist?.plan}
+                    </p>
+                </div>
+            </div>
             <Separator className="col-span-2 mt-4" />
             <div className="col-span-2 flex flex-col gap-2 ">
                 <div className="flex shrink-0">
@@ -182,7 +192,7 @@ const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps
             <div className="col-span-1 flex flex-col gap-2">
                 <div className="flex shrink-0">
                     <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
-                        Personal and Social History
+                        Personal, Social, and Emotional History
                     </Label>
                 </div>
                 <p className="text-wrap">
@@ -198,6 +208,39 @@ const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps
                 </div>
                 <p className="text-wrap">
                     {patientHist?.obgyneHistory}
+                </p>
+            </div>
+
+            <div className="col-span-1 flex flex-col gap-2">
+                <div className="flex shrink-0">
+                    <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
+                        Neurological Examination
+                    </Label>
+                </div>
+                <p className="text-wrap">
+                    {patientHist?.neurologicalExamination}
+                </p>
+            </div>
+
+            <div className="col-span-1 flex flex-col gap-2">
+                <div className="flex shrink-0">
+                    <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
+                        Physical Examination
+                    </Label>
+                </div>
+                <p className="text-wrap">
+                    {patientHist?.physicalExamination}
+                </p>
+            </div>
+
+            <div className="col-span-1 flex flex-col gap-2">
+                <div className="flex shrink-0">
+                    <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
+                        Treatment Plan
+                    </Label>
+                </div>
+                <p className="text-wrap">
+                    {patientHist?.treatmentPlan}
                 </p>
             </div>
         </div>

@@ -131,7 +131,6 @@ model PatientInformation {
 model PatientVitalSigns {
   id              String   @id @default(cuid())
   patientId       String
-  followUpsId     String?
   weight          String
   pulseRate       Int
   bodyTemperature String
@@ -141,7 +140,8 @@ model PatientVitalSigns {
   lastUpdate      DateTime
 
   patientInformation PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  followUps          FollowUps?         @relation(fields: [followUpsId], references: [id], onDelete: Cascade)
+  // followUps          FollowUps?         @relation(fields: [followUpsId], references: [id], onDelete: Cascade)
+  followUps          FollowUps[]
   PatientHistory     PatientHistory[]
 
   @@map("patient_vital_signs")
@@ -180,9 +180,10 @@ model FollowUps {
   diagnosis      String
   treatment      String
   plan           String
+  vitalSignsId   String @unique
 
   patient    PatientInformation  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  vitalSigns PatientVitalSigns[]
+  vitalSigns PatientVitalSigns? @relation(fields: [vitalSignsId], references: [id])
 
   @@map("follow_ups")
 }

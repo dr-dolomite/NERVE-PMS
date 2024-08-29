@@ -39,9 +39,8 @@ const ClerkDashboardPage = () => {
             <div className='flex flex-col justify-center items-center'>
                 <div className="grid grid-cols-2 grid-flow-row gap-x-12">
                     <Button asChild className="my-button-blue">
-
                         <Link href="/dashboard/add-existing-user">
-                            <CirclePlus className="w-6 h-6 mr-2" /> Add New Patient
+                            <CirclePlus className="w-6 h-6 mr-2" /> Add Existing Patient
                         </Link>
                     </Button>
                 </div>

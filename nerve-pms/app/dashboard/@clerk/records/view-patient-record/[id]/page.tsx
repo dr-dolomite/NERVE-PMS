@@ -25,6 +25,7 @@ import { BookText, IterationCw, UserCircle2, UserIcon } from 'lucide-react';
 import { getPatientById } from '@/data/get-patient-info';
 import PatientHistoryViewPage from '@/components/patient-history-view';
 import { FaMapMarkerAlt } from 'react-icons/fa';
+import FollowUpListPage from '@/components/follow-up-list';
 
 const ViewPatientRecordPage = async ({ params }: { params: { id: string } }) => {
 
@@ -203,7 +204,9 @@ const ViewPatientRecordPage = async ({ params }: { params: { id: string } }) => 
                                 <TabsContent value="history">
                                     <PatientHistoryViewPage patientId={params.id} />
                                 </TabsContent>
-                                <TabsContent value="followUp">Meow</TabsContent>
+                                <TabsContent value="followUp">
+                                    <FollowUpListPage patientId={params.id} />
+                                </TabsContent>
                             </Tabs>
                         </CardHeader>
 

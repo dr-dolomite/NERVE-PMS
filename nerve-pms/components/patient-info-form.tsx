@@ -1,4 +1,5 @@
 "use client";
+
 import * as z from "zod";
 import {
     useTransition,
@@ -26,7 +27,15 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -34,6 +43,7 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { savePatientInfo } from "@/actions/save-patient-info";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const PatientInformationForm = () => {
     const [error, setError] = useState<string | undefined>("");
@@ -46,6 +56,7 @@ const PatientInformationForm = () => {
         defaultValues: {
             name: "",
             city: "",
+            completeAddress: "",
             age: "",
             sex: "",
             birthday: "",
@@ -55,6 +66,7 @@ const PatientInformationForm = () => {
             religion: "",
             phone: "",
             email: "",
+            lastVisit: "",
         },
     });
 
@@ -83,279 +95,338 @@ const PatientInformationForm = () => {
     };
 
     return (
-        <Form {...form}>
-            <form className="grid grid-cols-3 grid-flow-row 2xl:gap-6 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="col-span-2">
-                    <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>
-                                    Full Name
-                                </FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        type="name"
-                                        placeholder="John Doe"
-                                        disabled={isPending}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Patient Information</CardTitle>
+                <CardDescription>Fill up the form below to register a new patient.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <Form {...form}>
+                    <form className="grid grid-cols-3 grid-flow-row 2xl:gap-8 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
 
-                <div className="col-span-1">
-                    <FormField
-                        control={form.control}
-                        name="city"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>
-                                    City
-                                </FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        placeholder="Iloilo City"
-                                        disabled={isPending}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                        <div className="col-span-2">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Full Name
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                type="name"
+                                                placeholder="Full Name"
+                                                disabled={!!isPending || !!success}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-                <FormField
-                    control={form.control}
-                    name="age"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Age
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="18"
-                                    disabled={isPending}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="city"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        City
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="City Only"
+                                            disabled={!!isPending || !!success}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="sex"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Sex
-                            </FormLabel>
-                            <FormControl>
-                                <Select disabled={isPending} onValueChange={field.onChange} defaultValue={field.value}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Choose Sex" />
-                                    </SelectTrigger>
-                                    <SelectContent
-                                    >
-                                        <SelectGroup>
-                                            <SelectItem value="male">Male</SelectItem>
-                                            <SelectItem value="female">Female</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <div className="col-span-3">
+                            <FormField
+                                control={form.control}
+                                name="completeAddress"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Complete Address
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                placeholder="Address"
+                                                disabled={!!isPending || !!success}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
 
-                <FormField
-                    control={form.control}
-                    name="birthday"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Birthday
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="08/11/2002"
-                                    disabled={isPending}
-                                    type="date"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="age"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Age
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="Age"
+                                            disabled={!!isPending || !!success}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="civilStatus"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Civil Status
-                            </FormLabel>
-                            <FormControl>
-                                <Select disabled={isPending} onValueChange={field.onChange} defaultValue={field.value}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Choose Civil Status" />
-                                    </SelectTrigger>
-                                    <SelectContent
-                                    >
-                                        <SelectGroup>
-                                            <SelectItem value="single">Single</SelectItem>
-                                            <SelectItem value="married">Married</SelectItem>
-                                            <SelectItem value="widowed">Widowed</SelectItem>
-                                            <SelectItem value="divorced">Divorced</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="sex"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Sex
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select disabled={!!isPending || !!success} onValueChange={field.onChange} defaultValue={field.value}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Choose Sex" />
+                                            </SelectTrigger>
+                                            <SelectContent
+                                            >
+                                                <SelectGroup>
+                                                    <SelectItem value="male">Male</SelectItem>
+                                                    <SelectItem value="female">Female</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="occupation"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Occupation
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="Worker"
-                                    disabled={isPending}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="birthday"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Birthday
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="mm/dd/yyyy"
+                                            disabled={!!isPending || !!success}
+                                            type="date"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="handedness"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Handedness
-                            </FormLabel>
-                            <FormControl>
-                                <Select disabled={isPending} onValueChange={field.onChange} defaultValue={field.value}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Choose Handedness" />
-                                    </SelectTrigger>
-                                    <SelectContent
-                                    >
-                                        <SelectGroup>
-                                            <SelectItem value="left">Left</SelectItem>
-                                            <SelectItem value="right">Right</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="civilStatus"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Civil Status
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select disabled={!!isPending || !!success} onValueChange={field.onChange} defaultValue={field.value}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Choose Civil Status" />
+                                            </SelectTrigger>
+                                            <SelectContent
+                                            >
+                                                <SelectGroup>
+                                                    <SelectItem value="single">Single</SelectItem>
+                                                    <SelectItem value="married">Married</SelectItem>
+                                                    <SelectItem value="widowed">Widowed</SelectItem>
+                                                    <SelectItem value="divorced">Divorced</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="religion"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Religion
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="Catholic"
-                                    disabled={isPending}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="occupation"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Occupation
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="Occupation"
+                                            disabled={!!isPending || !!success}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Contact
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="+639 999 9999"
-                                    disabled={isPending}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="handedness"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Handedness
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Select disabled={!!isPending || !!success} onValueChange={field.onChange} defaultValue={field.value}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Choose Handedness" />
+                                            </SelectTrigger>
+                                            <SelectContent
+                                            >
+                                                <SelectGroup>
+                                                    <SelectItem value="left">Left</SelectItem>
+                                                    <SelectItem value="right">Right</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>
-                                Email
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    {...field}
-                                    placeholder="email@example.com"
-                                    disabled={isPending}
-                                    type="email"
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                        <FormField
+                            control={form.control}
+                            name="religion"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Religion
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="Religion"
+                                            disabled={!!isPending || !!success}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                <div className="flex flex-col mt-4 w-[200px] gap-y-4 text-center">
-                    <FormError message={error} />
-                    <FormSuccess message={success} />
+                        <FormField
+                            control={form.control}
+                            name="phone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Contact
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="+639 999 9999"
+                                            disabled={!!isPending || !!success}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    {!success && (
-                        <Button type="submit" className="my-button-blue" disabled={isPending}>
-                            Save Patient Information
-                        </Button>
-                    )}
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Email
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="email@example.com"
+                                            disabled={!!isPending || !!success}
+                                            type="email"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                    {success && (
-                        <Button type="button" asChild className="my-button-blue">
-                            <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}`}>
-                                Add Patient Vitals
-                            </Link>
-                        </Button>
-                    )}
+                        <FormField
+                            control={form.control}
+                            name="lastVisit"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        Last Visit
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="mm/dd/yyyy"
+                                            type="date"
+                                            disabled={!!isPending || !!success}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
 
-                </div>
-            </form>
-        </Form>
+                        <div className="flex flex-col col-span-3 mt-4 gap-y-4">
+                            <div className="text-center">
+                                <FormError message={error} />
+                                <FormSuccess message={success} />
+                            </div>
+
+                            <div>
+                                {!success && (
+                                    <Button
+                                        type="submit"
+                                        size="lg"
+                                        className="my-button-blue"
+                                        disabled={isPending}>
+                                        Save Patient Information
+                                    </Button>
+                                )}
+
+                                {success && (
+                                    <Button type="button" size="lg" asChild className="my-button-blue">
+                                        <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}`}>
+                                            Add Patient Vitals
+                                            <ArrowRight className="ml-2 size-4" />
+                                        </Link>
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
+                    </form>
+                </Form>
+            </CardContent>
+        </Card>
+
     )
 }
 

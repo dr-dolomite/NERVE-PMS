@@ -15,6 +15,7 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
     const {
         name,
         city,
+        completeAddress,
         age,
         sex,
         birthday,
@@ -24,11 +25,18 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
         religion,
         phone,
         email,
+        lastVisit,
     } = validatedFields.data;
 
     const parsedBirthday = new Date(birthday);
 
     if (isNaN(parsedBirthday.getTime())) {
+        return { error: "Invalid date format." };
+    }
+
+    const parsedLastVisit = new Date(lastVisit);
+
+    if (isNaN(parsedLastVisit.getTime())) {
         return { error: "Invalid date format." };
     }
 
@@ -42,6 +50,7 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
         data: {
             name,
             city,
+            completeAddress,
             age,
             sex,
             birthday: parsedBirthday,
@@ -51,9 +60,10 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
             religion,
             phone,
             email,
+            lastVisit: parsedLastVisit,
             lastUpdate: new Date(),
         },
     });
 
-    return { success: "Patient information saved.", patientId: newPatient.id };
+    return { success: 'Patient information saved. Please proceed by pressing "Add Patient Vitals".', patientId: newPatient.id };
 };

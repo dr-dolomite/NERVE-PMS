@@ -35,5 +35,5 @@ export const savePatientVitals = async (values: z.infer<typeof PatientVitalsSche
         },
     });
 
-    return { success: "Patient vitals saved.", vitalSignsid: newVitalSigns.id};
+    return { success: 'Patient vitals saved. Please proceed.', vitalSignsid: newVitalSigns.id};
 };

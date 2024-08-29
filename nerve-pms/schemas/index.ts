@@ -52,6 +52,10 @@ export const PatientInformationSchema = z.object({
         message: 'City is required',
     }),
 
+    completeAddress: z.string().min(3, {
+        message: 'Complete address is required',
+    }),
+
     age: z.string().min(1, {
         message: 'Age is required',
     }),
@@ -87,6 +91,10 @@ export const PatientInformationSchema = z.object({
     email: z.string().email({
         message: 'Invalid email address',
     }),
+
+    lastVisit: z.string().min(3, {
+        message: 'Last visit is required',
+    }),
 });
 
 export const PatientVitalsSchema = z.object({
@@ -100,25 +108,24 @@ export const PatientVitalsSchema = z.object({
 });
 
 export const PatientHistorySchema = z.object({
-    patientId: z.string().nonempty("Patient name is required"),
-    vitalSignsid: z.string().nonempty("Vital signs ID is required"),
+    patientId: z.string(),
+    vitalSignsId: z.string().optional(),
     referredBy: z.string().optional(),
-    chiefComplaint: z.string().nonempty("Chief complaint is required"),
-    historyOfPresentIllness: z.string().nonempty("History of present illness is required"),
-    pastMedicalHistory: z.string().nonempty("Past medical history is required"),
-    familyHistory: z.string().nonempty("Family history is required"),
-    personalSocialHistory: z.string().nonempty("Social history is required"),
+    chiefComplaint: z.string().min(3, "Chief complaint is required"),
+    historyOfPresentIllness: z.string().min(3, "History of present illness is required"),
+    pastMedicalHistory: z.string().min(3, "Past medical history is required"),
+    familyHistory: z.string().min(3, "Family history is required"),
+    personalSocialHistory: z.string().min(3, "Personal social history is required"),
     obgyneHistory: z.string().optional(),
-    physicalExamination: z.string().nonempty("Physical exam is required"),
+    physicalExamination: z.string().min(3, "Physical examination is required"),
     neurologicalExamination: z.string().optional(),
-    diagnosis: z.string().nonempty("Diagnosis is required"),
     treatmentPlan: z.string().optional(),
-    plan: z.string().nonempty("Plan is required"),
+    plan: z.string().min(3, "Plan is required"),
 });
 
-export const FollowUpsSchema = z.object({
-    patientId: z.string().nonempty("Patient ID is required"),
-    date: z.string().nonempty("Date is required"),
+export const PatientFollowUpsSchema = z.object({
+    patientId: z.string(),
+    vitalSignsId: z.string().optional(),
     labResults: z.string().optional(),
     chiefComplaint: z.string().nonempty("Chief complaint is required"),
     so: z.string().nonempty("Subjective observation is required"),

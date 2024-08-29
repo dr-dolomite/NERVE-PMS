@@ -1,4 +1,3 @@
-// Server Action: savePatientHistory.ts
 "use server";
 
 import * as z from "zod";
@@ -8,7 +7,7 @@ import { PatientHistorySchema } from "@/schemas";
 export const savePatientHistory = async (values: z.infer<typeof PatientHistorySchema>) => {
     const validatedFields = PatientHistorySchema.safeParse(values);
 
-    console.log(validatedFields);
+    console.log({ validatedFields });
 
     if (!validatedFields.success) {
         return { error: "Invalid fields" };
@@ -16,7 +15,7 @@ export const savePatientHistory = async (values: z.infer<typeof PatientHistorySc
 
     const {
         patientId,
-        vitalSignsid,
+        vitalSignsId, // Changed from vitalSignsid to vitalSignsId
         referredBy,
         chiefComplaint,
         historyOfPresentIllness,
@@ -30,59 +29,66 @@ export const savePatientHistory = async (values: z.infer<typeof PatientHistorySc
         plan,
     } = validatedFields.data;
 
-    try {
-        // Check if a PatientHistory record already exists for this patient
-        const existingPatientHistory = await db.patientHistory.findUnique({
-            where: { patientId },
-        });
+    // Check if the patient exists
+    const patient = await db.patientInformation.findUnique({
+        where: {
+            id: patientId,
+        },
+    });
 
-        if (existingPatientHistory) {
-            // Update the existing record
-            const updatedPatientHistory = await db.patientHistory.update({
-                where: { patientId },
-                data: {
-                    vitalSignsid,
-                    referredBy,
-                    chiefComplaint,
-                    historyOfPresentIllness,
-                    pastMedicalHistory,
-                    familyHistory,
-                    personalSocialHistory,
-                    obgyneHistory,
-                    physicalExamination,
-                    neurologicalExamination,
-                    treatmentPlan,
-                    plan,
-                    date: new Date(),
-                },
-            });
-
-            return { success: "Patient history updated.", patientHistoryId: updatedPatientHistory.id };
-        } else {
-            // Create a new PatientHistory record
-            const newPatientHistory = await db.patientHistory.create({
-                data: {
-                    patientId,
-                    vitalSignsid,
-                    referredBy,
-                    chiefComplaint,
-                    historyOfPresentIllness,
-                    pastMedicalHistory,
-                    familyHistory,
-                    personalSocialHistory,
-                    obgyneHistory,
-                    physicalExamination,
-                    neurologicalExamination,
-                    treatmentPlan,
-                    plan,
-                    date: new Date(),
-                },
-            });
-
-            return { success: "Patient history saved.", patientHistoryId: newPatientHistory.id };
-        }
-    } catch (error) {
-        console.error("Error saving/updating patient history:", error);
-        return { error: "Failed to save/update patient history. Please try again." };
+    if (!patient) {
+        return { error: "Patient not found." };
     }
+
+    // Check if the vital signs exist
+    const vitalSigns = await db.patientVitalSigns.findUnique({
+        where: {
+            id: vitalSignsId,
+        },
+    });
+
+    if (!vitalSigns) {
+        return { error: "Vital signs not found." };
+    }
+
+    // Check if the patient history already exists
+    const existingPatientHistory = await db.patientHistory.findFirst({
+        where: {
+            patientId,
+            vitalSignsid: vitalSignsId,
+        },
+    });
+
+    if (existingPatientHistory) {
+        return { error: "Patient history already exists" };
+    }
+
+    const newPatientHistory = await db.patientHistory.create({
+        data: {
+            patient: {
+                connect: {
+                    id: patientId,
+                },
+            },
+            vitalSigns: {
+                connect: {
+                    id: vitalSignsId,
+                },
+            },
+            referredBy,
+            chiefComplaint,
+            historyOfPresentIllness,
+            pastMedicalHistory,
+            familyHistory,
+            personalSocialHistory,
+            obgyneHistory,
+            physicalExamination,
+            neurologicalExamination,
+            treatmentPlan,
+            plan,
+            date: new Date(),
+        },
+    });
+
+    return { success: "Patient history saved.", patientHistoryId: newPatientHistory.id };
 };

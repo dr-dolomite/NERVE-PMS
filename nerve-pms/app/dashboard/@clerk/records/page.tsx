@@ -1,5 +1,7 @@
 "use server";
 
+import Link from "next/link";
+
 import {
   File,
   ListFilter,
@@ -59,6 +61,7 @@ interface Patient {
   patientStatus: string;
   lastUpdate: Date;
   lastVisit: Date | null;
+  id: string;
 }
 
 const RecordsPage = async () => {
@@ -76,13 +79,13 @@ const RecordsPage = async () => {
       </div>
 
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-        <Tabs defaultValue="all">
-          <div className="flex items-center">
-            <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="active">Recent</TabsTrigger>
-              <TabsTrigger value="recent">Active</TabsTrigger>
-              <TabsTrigger value="archived" className="hidden sm:flex">
+        <Tabs defaultValue="all" className="relative mr-auto w-full">
+          <div className="flex flex-row" >
+            <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
+              <TabsTrigger value="all" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >All</TabsTrigger>
+              <TabsTrigger value="active" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >Recent</TabsTrigger>
+              <TabsTrigger value="recent" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >Active</TabsTrigger>
+              <TabsTrigger value="archived" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none ">
                 Archived
               </TabsTrigger>
             </TabsList>
@@ -158,15 +161,17 @@ const RecordsPage = async () => {
                     {patients.map((patient) => (
                       <TableRow key={patient.name}>
                         <TableCell className="hidden sm:table-cell">
-                          <Avatar className="hidden h-20 w-20 sm:flex">
+                          <Avatar className="hidden h-12 w-12 sm:flex">
                             <AvatarImage src="missing.png" alt="Avatar" />
                             <AvatarFallback>
                               <UserRound />
                             </AvatarFallback>
                           </Avatar>
                         </TableCell>
-                        <TableCell className="font-medium">
-                          {patient.name}
+                        <TableCell className="font-medium hover:underline">
+                          <Link href={`/dashboard/records/view-patient-record/${patient.id}`}>
+                            {patient.name}
+                          </Link>
                         </TableCell>
                         <TableCell>
                           {/* <Badge variant="outline">Recent</Badge> */}

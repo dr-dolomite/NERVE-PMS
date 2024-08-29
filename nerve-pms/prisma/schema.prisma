@@ -103,22 +103,23 @@ enum PatientStatus {
 }
 
 model PatientInformation {
-  id            String        @id @default(cuid())
-  patientStatus PatientStatus @default(ACTIVE)
-  name          String        @unique
-  age           String
-  city          String
-  civilStatus   String
-  handedness    String
-  sex           String
-  birthday      DateTime
-  occupation    String
-  religion      String
-  email         String?
-  phone         String?
-  lastVisit     DateTime?
-  nextVisit     DateTime?
-  lastUpdate    DateTime
+  id              String        @id @default(cuid())
+  patientStatus   PatientStatus @default(ACTIVE)
+  name            String        @unique
+  age             String
+  city            String
+  completeAddress String
+  civilStatus     String
+  handedness      String
+  sex             String
+  birthday        DateTime
+  occupation      String
+  religion        String
+  email           String?
+  phone           String?
+  lastVisit       DateTime?
+  nextVisit       DateTime?
+  lastUpdate      DateTime
 
   patientHistories  PatientHistory[]
   followUps         FollowUps[]

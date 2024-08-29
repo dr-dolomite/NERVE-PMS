@@ -9,7 +9,8 @@ export const getPatients = async () => {
             phone: true,
             patientStatus: true,
             lastUpdate: true,
-            lastVisit: true
+            lastVisit: true,
+            id: true,
         }
     });
 };
@@ -27,9 +28,38 @@ export const getPatientByName = async (name: string) => {
 export const getPatientById = async (id: string) => {
     const patientId = await db.patientInformation.findUnique({
         where: {
-            id
+            id: id
         }
     });
 
     return patientId;
+}
+
+export const getPatientHistoryById = async (id: string) => {
+    const patientHistory = await db.patientHistory.findUnique({
+        where: {
+            patientId: id
+        }
+    });
+
+    return patientHistory;
+}
+
+// Get patient vitals of history
+export const getPatientVitalsById = async (id: string) => {
+    const patientVitals = await db.patientVitalSigns.findUnique({
+        where: {
+            id
+        }, 
+        select: {
+            weight: true,
+            bodyTemperature: true,
+            bloodPressure: true,
+            pulseRate: true,
+            oxygen: true,
+        }
+    });
+    
+
+    return patientVitals;
 }

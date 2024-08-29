@@ -92,12 +92,12 @@ const RecordsPage = async () => {
             <div className="ml-auto flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 gap-1">
+                  {/* <Button variant="outline" size="sm" className="h-7 gap-1">
                     <ListFilter className="h-3.5 w-3.5" />
                     <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                       Filter
                     </span>
-                  </Button>
+                  </Button> */}
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Filter by</DropdownMenuLabel>
@@ -113,17 +113,18 @@ const RecordsPage = async () => {
                   </DropdownMenuCheckboxItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button size="sm" variant="outline" className="h-7 gap-1">
+              {/* <Button size="sm" variant="outline" className="h-7 gap-1">
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                   Export
                 </span>
-              </Button>
-              <Button size="sm" className="h-7 gap-1 my-button-blue">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Add New Record
-                </span>
+              </Button> */}
+              <Button asChild size="sm" className="h-7 gap-1 my-button-blue">
+                <Link href="/dashboard/add-existing-user">
+                  <PlusCircle className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Add Existing Record
+                  </span></Link>
               </Button>
             </div>
           </div>

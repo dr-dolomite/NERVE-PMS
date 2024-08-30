@@ -120,6 +120,7 @@ model PatientInformation {
   lastVisit       DateTime?
   nextVisit       DateTime?
   lastUpdate      DateTime
+  imageURL        String?
 
   patientHistories  PatientHistory[]
   followUps         FollowUps[]

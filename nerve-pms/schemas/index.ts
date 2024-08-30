@@ -95,6 +95,8 @@ export const PatientInformationSchema = z.object({
     lastVisit: z.string().min(3, {
         message: 'Last visit is required',
     }),
+
+    imageUrl : z.string().optional(),
 });
 
 export const PatientVitalsSchema = z.object({

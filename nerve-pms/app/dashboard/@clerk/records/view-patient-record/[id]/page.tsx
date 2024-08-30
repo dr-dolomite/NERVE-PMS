@@ -52,7 +52,7 @@ const ViewPatientRecordPage = async ({ params }: { params: { id: string } }) => 
                 <div className='grid grid-cols-5 grid-flow-row gap-x-12'>
                     <div className='flex flex-col flex-shrink-0 gap-y-8'>
                         <Avatar className='2xl:size-64 size-32 rounded-sm'>
-                            <AvatarImage src="https://github.com/shadcn.png" />
+                            <AvatarImage src={patient.imageURL ?? ''} />
                             <AvatarFallback className='rounded-sm'>
                                 <UserCircle2 className='size-24' />
                             </AvatarFallback>

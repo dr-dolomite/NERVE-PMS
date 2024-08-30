@@ -44,12 +44,63 @@ import { FormSuccess } from "@/components/form-success";
 import { savePatientInfo } from "@/actions/save-patient-info";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Label } from "@/components/ui/label";
+
+import axios from "axios";
 
 const PatientInformationForm = () => {
     const [error, setError] = useState<string | undefined>("");
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
     const [patientId, setPatientId] = useState<string>("");
+
+    /* For S3 Image Upload */
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setSelectedFile(event.target.files[0]);
+        }
+    };
+
+    const uploadToS3 = async (file: File): Promise<string> => {
+        try {
+
+            console.log('Requesting presigned URL for:', file.name);
+            const response = await fetch(`/api/presigned?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type)}`);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Presigned URL response:', response.status, errorText);
+                throw new Error(`Failed to get presigned URL: ${response.statusText}`);
+            }
+
+            const { signedUrl } = await response.json();
+            console.log('Received presigned URL:', signedUrl);
+
+            const uploadResponse = await fetch(signedUrl, {
+                method: 'PUT',
+                body: file,
+                headers: {
+                    'Content-Type': file.type,
+                },
+            });
+
+            if (!uploadResponse.ok) {
+                const errorText = await uploadResponse.text();
+                console.error('Upload error details:', errorText);
+                throw new Error(`Upload failed with status: ${uploadResponse.status}`);
+            }
+
+            // Return the URL of the uploaded image
+            return signedUrl.split('?')[0]; // Return the URL without the query string
+        } catch (error) {
+            console.error('Error uploading to S3:', error);
+            throw error;
+        }
+    };
+    /* For S3 Image Upload */
 
     const form = useForm<z.infer<typeof PatientInformationSchema>>({
         resolver: zodResolver(PatientInformationSchema),
@@ -67,33 +118,43 @@ const PatientInformationForm = () => {
             phone: "",
             email: "",
             lastVisit: "",
+            imageUrl: "",
         },
     });
 
-    const onSubmit = (values: z.infer<typeof PatientInformationSchema>) => {
-        setError("");
-        setSuccess("");
+    const onSubmit = async (values: z.infer<typeof PatientInformationSchema>) => {
+        try {
+            if (selectedFile) {
+                const imageUrl = await uploadToS3(selectedFile);
+                values.imageUrl = imageUrl;
+            }
 
-        startTransition(() => {
-            savePatientInfo(values)
-                .then((data) => {
-                    if (data?.error) {
-                        form.reset();
-                        setError(data.error);
-                    }
+            setError('');
+            setSuccess('');
 
-                    if (data?.success) {
-                        form.reset();
-                        setSuccess(data.success);
-                        setPatientId(data.patientId);
-                    }
-                })
-                .catch(() => {
-                    setError("An error occurred.");
-                })
-        })
+            startTransition(() => {
+                savePatientInfo(values)
+                    .then((data) => {
+                        if (data?.error) {
+                            form.reset();
+                            setError(data.error);
+                        }
+
+                        if (data?.success) {
+                            form.reset();
+                            setSuccess(data.success);
+                            setPatientId(data.patientId);
+                        }
+                    })
+                    .catch(() => {
+                        setError("An error occurred.");
+                    });
+            });
+        } catch (error) {
+            console.error('Error in form submission:', error);
+            setError("Failed to upload image or save patient information.");
+        }
     };
-
     return (
         <Card>
             <CardHeader>
@@ -103,7 +164,30 @@ const PatientInformationForm = () => {
             <CardContent>
                 <Form {...form}>
                     <form className="grid grid-cols-3 grid-flow-row 2xl:gap-8 gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-
+                        <div className="col-span-2 max-w-sm">
+                            <FormField
+                                control={form.control}
+                                name="imageUrl"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>
+                                            Full Name
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                // {...field}
+                                                id="picture"
+                                                type="file"
+                                                accept=".png, .jpg, .jpeg"
+                                                onChange={handleFileChange}
+                                                disabled={!!isPending || !!success}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <div className="col-span-2">
                             <FormField
                                 control={form.control}

@@ -26,6 +26,7 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
         phone,
         email,
         lastVisit,
+        imageUrl,
     } = validatedFields.data;
 
     const parsedBirthday = new Date(birthday);
@@ -62,6 +63,7 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
             email,
             lastVisit: parsedLastVisit,
             lastUpdate: new Date(),
+            imageURL: imageUrl,
         },
     });
 

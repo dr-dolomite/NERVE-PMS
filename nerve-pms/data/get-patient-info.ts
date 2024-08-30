@@ -10,6 +10,7 @@ export const getPatients = async () => {
             patientStatus: true,
             lastUpdate: true,
             lastVisit: true,
+            imageURL: true,
             id: true,
         }
     });

@@ -25,6 +25,7 @@ export const savePatientHistory = async (values: z.infer<typeof PatientHistorySc
         obgyneHistory,
         physicalExamination,
         neurologicalExamination,
+        diagnosis,
         treatmentPlan,
         plan,
     } = validatedFields.data;
@@ -84,11 +85,12 @@ export const savePatientHistory = async (values: z.infer<typeof PatientHistorySc
             obgyneHistory,
             physicalExamination,
             neurologicalExamination,
+            diagnosis,
             treatmentPlan,
             plan,
             date: new Date(),
         },
     });
 
-    return { success: "Patient history saved.", patientHistoryId: newPatientHistory.id };
+    return { success: "Patient history saved.", patientHistoryId: newPatientHistory.id, plan };
 };

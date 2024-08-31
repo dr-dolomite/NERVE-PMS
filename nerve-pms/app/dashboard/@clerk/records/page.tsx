@@ -164,7 +164,7 @@ const RecordsPage = async () => {
                       <TableRow key={patient.name}>
                         <TableCell className="hidden sm:table-cell">
                           <Avatar className="hidden h-12 w-12 sm:flex">
-                            <AvatarImage src={patient.imageURL} alt="Avatar" />
+                            <AvatarImage src={patient.imageURL ?? " "} alt="Avatar" />
                             <AvatarFallback>
                               <UserRound />
                             </AvatarFallback>

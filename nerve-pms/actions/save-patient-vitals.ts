@@ -18,7 +18,6 @@ export const savePatientVitals = async (values: z.infer<typeof PatientVitalsSche
         weight,
         oxygen,
         patientId, // Required for reference
-        followUpsId, // Optional, if linking to a follow-up
     } = validatedFields.data;
 
     const newVitalSigns = await db.patientVitalSigns.create({
@@ -31,7 +30,6 @@ export const savePatientVitals = async (values: z.infer<typeof PatientVitalsSche
             oxygen,
             lastUpdate: new Date(),
             patientId, // Link to the patient
-            followUpsId, // Optional link to follow-ups if applicable
         },
     });
 

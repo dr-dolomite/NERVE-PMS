@@ -44,9 +44,6 @@ import { FormSuccess } from "@/components/form-success";
 import { savePatientInfo } from "@/actions/save-patient-info";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Label } from "@/components/ui/label";
-
-import axios from "axios";
 
 const PatientInformationForm = () => {
     const [error, setError] = useState<string | undefined>("");
@@ -56,11 +53,28 @@ const PatientInformationForm = () => {
 
     /* For S3 Image Upload */
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
-            setSelectedFile(event.target.files[0]);
+            const file = event.target.files[0];
+
+            // Check if the file size is greater than 3MB
+            if (file.size > 3 * 1024 * 1024) {
+                setError("File size must be less than 3MB.");
+                setSelectedFile(null);
+                return;
+            }
+
+            // Check if the file type is allowed (png, jpg, jpeg)
+            const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+            if (!allowedTypes.includes(file.type)) {
+                setError("File must be in PNG, JPG, or JPEG format.");
+                setSelectedFile(null);
+                return;
+            }
+
+            setSelectedFile(file);
+            setError(""); // Clear any previous errors
         }
     };
 
@@ -171,7 +185,7 @@ const PatientInformationForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>
-                                            Full Name
+                                            Patient Image
                                         </FormLabel>
                                         <FormControl>
                                             <Input

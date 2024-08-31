@@ -106,7 +106,6 @@ export const PatientVitalsSchema = z.object({
     weight: z.string().nonempty("Weight is required"),
     oxygen: z.number().min(0, "Oxygen level must be at least 0").max(100, "Oxygen level must be at most 100"),
     patientId: z.string().nonempty("Patient ID is required"),
-    followUpsId: z.string().optional(),
 });
 
 export const PatientHistorySchema = z.object({
@@ -121,6 +120,7 @@ export const PatientHistorySchema = z.object({
     obgyneHistory: z.string().optional(),
     physicalExamination: z.string().min(3, "Physical examination is required"),
     neurologicalExamination: z.string().optional(),
+    diagnosis: z.string().min(3, "Diagnosis is required"),
     treatmentPlan: z.string().optional(),
     plan: z.string().min(3, "Plan is required"),
 });
@@ -134,4 +134,11 @@ export const PatientFollowUpsSchema = z.object({
     diagnosis: z.string().nonempty("Diagnosis is required"),
     treatment: z.string().nonempty("Treatment is required"),
     plan: z.string().nonempty("Plan is required"),
+});
+
+export const FollowUpPlanSchema = z.object({
+    patientId: z.string(),
+    recordId: z.string(),
+    nextVisit: z.string().nonempty("Next visit is required"),
+    followUpNotes: z.string().optional(),
 });

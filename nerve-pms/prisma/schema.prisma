@@ -117,14 +117,15 @@ model PatientInformation {
   religion        String
   email           String?
   phone           String?
-  lastVisit       DateTime?
-  nextVisit       DateTime?
+  lastVisit       DateTime?     @default(now())
   lastUpdate      DateTime
   imageURL        String?
 
   patientHistories  PatientHistory[]
   followUps         FollowUps[]
   PatientVitalSigns PatientVitalSigns[]
+  OPD               OPD[]
+  FollowUpPlan      FollowUpPlan[]
 
   @@map("patient_information")
 }
@@ -141,7 +142,6 @@ model PatientVitalSigns {
   lastUpdate      DateTime
 
   patientInformation PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  // followUps          FollowUps?         @relation(fields: [followUpsId], references: [id], onDelete: Cascade)
   followUps          FollowUps[]
   PatientHistory     PatientHistory[]
 
@@ -162,11 +162,14 @@ model PatientHistory {
   physicalExamination     String
   neurologicalExamination String?
   treatmentPlan           String?
+  diagnosis               String
   plan                    String
-  vitalSignsid            String
+  vitalSignsid            String   @unique
 
-  patient    PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  vitalSigns PatientVitalSigns? @relation(fields: [vitalSignsid], references: [id])
+  patient     PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  vitalSigns  PatientVitalSigns? @relation(fields: [vitalSignsid], references: [id])
+  OPD         OPD[]
+  FolowUpPlan FollowUpPlan[]
 
   @@map("patient_histories")
 }
@@ -181,10 +184,47 @@ model FollowUps {
   diagnosis      String
   treatment      String
   plan           String
-  vitalSignsId   String @unique
+  vitalSignsId   String   @unique
 
-  patient    PatientInformation  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  vitalSigns PatientVitalSigns? @relation(fields: [vitalSignsId], references: [id])
+  patient      PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  vitalSigns   PatientVitalSigns? @relation(fields: [vitalSignsId], references: [id])
+  OPD          OPD[]
+  FollowUpPlan FollowUpPlan[]
 
   @@map("follow_ups")
+}
+
+// Record Plans
+
+model FollowUpPlan {
+  id            String   @id @default(cuid())
+  patientId     String
+  historyId     String? @unique
+  followUpId    String? @unique
+  date          DateTime
+  nextVisit     DateTime
+  followUpNotes String?
+
+  patient        PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  FollowUps      FollowUps?         @relation(fields: [followUpId], references: [id], onDelete: Cascade)
+  PatientHistory PatientHistory?    @relation(fields: [historyId], references: [id], onDelete: Cascade)
+
+  @@map("follow_up_plan")
+}
+
+model OPD {
+  id           String   @id @default(cuid())
+  patientId    String
+  historyId    String?  @unique
+  followUpId   String?  @unique
+  date         DateTime
+  medication   String
+  diagnosis    String
+  followUpDate DateTime
+
+  patient        PatientInformation @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  PatientHistory PatientHistory?    @relation(fields: [historyId], references: [id])
+  FollowUps      FollowUps?         @relation(fields: [followUpId], references: [id])
+
+  @@map("opd")
 }

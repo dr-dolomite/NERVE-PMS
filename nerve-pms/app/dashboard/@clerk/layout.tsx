@@ -29,11 +29,8 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { RoleGate } from "@/components/auth/role-gate";
-import { UserRole } from "@prisma/client";
 
 import { signOut } from "next-auth/react";
-import path from "path";
 
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
@@ -44,7 +41,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        // <RoleGate allowedRole={UserRole.CLERK}>
         <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
             <div className="hidden border-r bg-muted/40 md:block">
                 <div className="flex h-full max-h-screen flex-col gap-2">

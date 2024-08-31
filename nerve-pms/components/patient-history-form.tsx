@@ -62,6 +62,8 @@ const PatientHistoryForm = () => {
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [planType, setPlanType] = useState<string | undefined>("");
+  const [patientHistoryRecordId, setPatientHistoryRecordId] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const patientId = searchParams.get("patientId");
@@ -82,6 +84,7 @@ const PatientHistoryForm = () => {
       obgyneHistory: "",
       physicalExamination: "",
       neurologicalExamination: "",
+      diagnosis: "",
       treatmentPlan: "",
       plan: "",
     },
@@ -102,7 +105,8 @@ const PatientHistoryForm = () => {
           if (data?.success) {
             form.reset();
             setSuccess(data.success);
-            // setvitalSignsId(data.vitalSignsId);
+            setPlanType(data.plan);
+            setPatientHistoryRecordId(data.patientHistoryId);
           }
         })
         .catch(() => {
@@ -312,6 +316,26 @@ const PatientHistoryForm = () => {
 
             <FormField
               control={form.control}
+              name="diagnosis"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    Diagnosis
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Type here..."
+                      disabled={!!isPending || !!success}
+                      className="h-36 font-medium focus:ring-2 focus:ring-[#2F80ED] focus:ring-opacity-60"
+                      {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="treatmentPlan"
               render={({ field }) => (
                 <FormItem>
@@ -330,33 +354,37 @@ const PatientHistoryForm = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="plan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    Plan
-                  </FormLabel>
-                  <FormControl>
-                    <Select disabled={!!isPending || !!success} onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose Plan" />
-                      </SelectTrigger>
-                      <SelectContent
-                      >
-                        <SelectGroup>
-                          <SelectItem value="followup">Follow Up</SelectItem>
-                          <SelectItem value="admit">Admit</SelectItem>
-                          <SelectItem value="referredTo">Referred To</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="max-w-sm">
+              <FormField
+                control={form.control}
+                name="plan"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Plan
+                    </FormLabel>
+                    <FormControl>
+                      <Select disabled={!!isPending || !!success} onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose Plan" />
+                        </SelectTrigger>
+                        <SelectContent
+                        >
+                          <SelectGroup>
+                            <SelectItem value="follow-up">Follow Up</SelectItem>
+                            <SelectItem value="opd">OPD</SelectItem>
+                            <SelectItem value="admit">Admit</SelectItem>
+                            <SelectItem value="referral">Referred To</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
 
             <div className="flex flex-col mt-4 col-span-2 gap-y-4">
               <div className="text-center">
@@ -366,16 +394,30 @@ const PatientHistoryForm = () => {
 
               <div className="flex flex-row 2xl:gap-x-12 gap-x-8 mt-4">
                 {!success && error !== "Patient history already exists" && (
-                  <Button 
-                  type="submit" 
-                  className="my-button-blue" 
-                  size="lg" 
-                  disabled={isPending}>
+                  <Button
+                    type="submit"
+                    className="my-button-blue"
+                    size="lg"
+                    disabled={isPending}>
                     Save Patient History
                   </Button>
                 )}
 
                 {success && (
+                  <Button
+                    type="button"
+                    asChild
+                    className="my-button-blue"
+                    size="lg"
+                  >
+                    <Link href={`/dashboard/add-plan/${planType}?patientId=${patientId}&id=${patientHistoryRecordId}`}>
+                      Add Patient Plan Information
+                      <ArrowRight className="size-4 ml-2" />
+                    </Link>
+                  </Button>
+                )}
+
+                {/* {success && (
                   <div className="flex flex-row 2xl:gap-x-12 gap-x-8">
                     <AlertDialog>
                       <AlertDialogTrigger>
@@ -416,22 +458,22 @@ const PatientHistoryForm = () => {
                     </Button>
 
                   </div>
-                )}
+                )} */}
 
                 {error === "Patient history already exists" && (
                   <>
-                  <Button
-                    type="button"
-                    asChild
-                    className="my-button-blue"
-                    size="lg"
-                  >
-                    <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}&type=followUp`}>
-                      Add Patient Follow-up
-                    </Link>
-                  </Button>
+                    <Button
+                      type="button"
+                      asChild
+                      className="my-button-blue"
+                      size="lg"
+                    >
+                      <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}`}>
+                        Add Patient Follow-up
+                      </Link>
+                    </Button>
 
-                  <Button
+                    <Button
                       type="button"
                       asChild
                       className="my-button-gray"
@@ -441,10 +483,9 @@ const PatientHistoryForm = () => {
                         Go Back
                       </Link>
                     </Button>
-                    </>
+                  </>
                 )
                 }
-
               </div>
             </div>
           </form>

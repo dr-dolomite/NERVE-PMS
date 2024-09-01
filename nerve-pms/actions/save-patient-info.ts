@@ -34,6 +34,11 @@ export const savePatientInfo = async (values: z.infer<typeof PatientInformationS
     if (isNaN(parsedBirthday.getTime())) {
         return { error: "Invalid date format." };
     }
+    
+    // If birthday is greater than or equal than today, return error
+    if (parsedBirthday >= new Date()) {
+        return { error: "Birthday must be less than today." };
+    }
 
     const parsedLastVisit = new Date(lastVisit);
 

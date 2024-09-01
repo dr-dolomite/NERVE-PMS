@@ -142,3 +142,9 @@ export const FollowUpPlanSchema = z.object({
     nextVisit: z.string().nonempty("Next visit is required"),
     followUpNotes: z.string().optional(),
 });
+
+export const searchQuerySchema = z.object({
+    name: z.string().min(3, {
+        message: 'Name is required',
+    }),
+});

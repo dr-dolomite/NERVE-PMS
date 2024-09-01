@@ -138,8 +138,6 @@ const PatientInformationForm = () => {
     });
 
     const onSubmit = async (values: z.infer<typeof PatientInformationSchema>) => {
-        console.log("Form values:", values);
-        console.log("I was clicked");
         try {
             if (selectedFile) {
                 const imageUrl = await uploadToS3(selectedFile);

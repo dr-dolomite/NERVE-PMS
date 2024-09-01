@@ -139,14 +139,20 @@ export const getPatientInformationOnlyById = async (id: string) => {
     return patientInformation;
 }
 
-export const searchPatientByName = async (name: string) => {
-    const patient = await db.patientInformation.findMany({
-        where: {
-            name: {
-                contains: name
-            }
-        }
-    });
-
-    return patient;
+export async function searchPatientByName(name: string) {
+    try {
+        const patients = await db.patientInformation.findMany({
+            where: {
+                name: {
+                    contains: name,
+                    mode: 'insensitive',
+                },
+            },
+            take: 10, // Limit the number of results
+        });
+        return patients;
+    } catch (error) {
+        console.error("Error searching for patients:", error);
+        return [];
+    }
 }

@@ -1,5 +1,13 @@
 "use client";
 
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
 import { CirclePlus } from 'lucide-react';
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -36,7 +44,25 @@ const ClerkDashboardPage = () => {
                 </div>
             </div>
 
-            <div className='flex flex-col justify-center items-center'>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Quick Actions</CardTitle>
+                    <CardDescription>
+                        Since some features are not yet available, you can only add existing patients for now.
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent>
+                    <div className="grid grid-cols-2 grid-flow-row gap-x-12">
+                        <Button asChild className="my-button-blue max-w-sm">
+                            <Link href="/dashboard/add-existing-user">
+                                <CirclePlus className="w-6 h-6 mr-2" /> Add Existing Patient
+                            </Link>
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+            {/* <div className='flex flex-col justify-center items-center'>
                 <div className="grid grid-cols-2 grid-flow-row gap-x-12">
                     <Button asChild className="my-button-blue">
                         <Link href="/dashboard/add-existing-user">
@@ -44,7 +70,7 @@ const ClerkDashboardPage = () => {
                         </Link>
                     </Button>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 };

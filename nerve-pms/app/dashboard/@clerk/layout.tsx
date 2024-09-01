@@ -1,7 +1,17 @@
 "use client";
 
-import { ReactNode } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import * as z from "zod";
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+
+
+import {
+    ReactNode,
+} from "react";
+
+import {
+    usePathname,
+} from "next/navigation";
 
 import Link from "next/link";
 import {
@@ -29,13 +39,13 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 import { signOut } from "next-auth/react";
 
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
     const pathname = usePathname();
+
     const logOut = () => {
         signOut();
     }
@@ -59,12 +69,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                             <Link
                                 href="/dashboard/home"
                                 className={`flex items-center gap-3 rounded-lg antialiased px-3 py-2 transition-all ${pathname == "/dashboard/home" ||
-                                        pathname == "/dashboard/add-existing-user" ||
-                                        pathname == "/dashboard/add-new-user" ||
-                                        pathname == "/dashboard/add-patient-history" ||
-                                        pathname == "/dashboard/add-patient-vitals" ||
-                                        pathname == "/dashboard/add-followup"
-                                        ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary"}`}
+                                    pathname == "/dashboard/add-existing-user" ||
+                                    pathname == "/dashboard/add-new-user" ||
+                                    pathname == "/dashboard/add-patient-history" ||
+                                    pathname == "/dashboard/add-patient-vitals" ||
+                                    pathname == "/dashboard/add-followup"
+                                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary"}`}
                             >
                                 <Home className="h-5 w-5" />
                                 Dashboard
@@ -137,8 +147,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                                 <Search className="absolute left-2.5 top-2.5 h-5 w-5 text-muted-foreground" />
                                 <Input
                                     type="search"
-                                    placeholder="Search records..."
+                                    placeholder="Still under development..."
                                     className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+                                    disabled
                                 />
                             </div>
                         </form>

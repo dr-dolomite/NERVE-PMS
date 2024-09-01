@@ -43,7 +43,7 @@ export const {
             // Allow Oauth without email verification
             if (account?.provider !== "credentials") return true;
 
-            const existingUser = await getUserById(user.id);
+            const existingUser = await getUserById(user.id || "");
 
             // Prevent sign in if email is not verified
             if (!existingUser?.emailVerified) return false;

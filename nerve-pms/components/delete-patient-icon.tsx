@@ -22,16 +22,20 @@ import { useToast } from "@/components/ui/use-toast"
 
 import { deletePatientRecord } from '@/actions/delete-patient-record';
 
+import { useRouter } from 'next/navigation';
+
 
 const DeletePatientIcon = ({ patientName }: DeletePatientIconProps) => {
     const { toast } = useToast();
+    const router = useRouter();
 
     const onDelete = () => {
         deletePatientRecord(patientName);
         toast({
             title: "Deleted successfuly!",
-            description: "Please refresh the page to see the changes.",
-          })
+            description: "Please refresh the page if the record still shows.",
+        })
+        router.refresh();
     }
 
     return (

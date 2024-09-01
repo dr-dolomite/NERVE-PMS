@@ -83,12 +83,12 @@ const RecordsPage = async () => {
         <Tabs defaultValue="all" className="relative mr-auto w-full">
           <div className="flex flex-row" >
             <TabsList className="w-full justify-start rounded-none border-b bg-transparent p-0">
-              <TabsTrigger value="all" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >All</TabsTrigger>
-              <TabsTrigger value="active" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >Recent</TabsTrigger>
+              <TabsTrigger value="all" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-[#2F80ED] data-[state=active]:text-foreground data-[state=active]:shadow-none " >All</TabsTrigger>
+              {/* <TabsTrigger value="active" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >Recent</TabsTrigger>
               <TabsTrigger value="recent" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none " >Active</TabsTrigger>
               <TabsTrigger value="archived" className="relative data-[state=active]:bg-none rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2 font-semibold text-muted-foreground shadow-none transition-none focus-visible:ring-0 data-[state=active]:border-b-primary data-[state=active]:text-foreground data-[state=active]:shadow-none ">
                 Archived
-              </TabsTrigger>
+              </TabsTrigger> */}
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
               <DropdownMenu>

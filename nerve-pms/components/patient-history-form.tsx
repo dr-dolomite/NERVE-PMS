@@ -417,49 +417,6 @@ const PatientHistoryForm = () => {
                   </Button>
                 )}
 
-                {/* {success && (
-                  <div className="flex flex-row 2xl:gap-x-12 gap-x-8">
-                    <AlertDialog>
-                      <AlertDialogTrigger>
-                        <Button
-                          type="button"
-                          className="my-button-blue"
-                          size="lg"
-                        >
-                          Add Patient Follow-up
-                          <ArrowRight className="size-4 ml-2" />
-                        </Button></AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Adding Patient Follow-up</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            You will need the respected vital signs to proceed for each patient follow-up.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="my-button-blue" asChild>
-                            <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}&type=followUp`}>
-                              Continue
-                            </Link>
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                    <Button
-                      type="button"
-                      asChild
-                      className="my-button-gray"
-                      size="lg"
-                    >
-                      <Link href="/dashboard/home">
-                        Go Back
-                      </Link>
-                    </Button>
-
-                  </div>
-                )} */}
-
                 {error === "Patient history already exists" && (
                   <>
                     <Button
@@ -468,7 +425,7 @@ const PatientHistoryForm = () => {
                       className="my-button-blue"
                       size="lg"
                     >
-                      <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}`}>
+                      <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}&type="followUp"`}>
                         Add Patient Follow-up
                       </Link>
                     </Button>

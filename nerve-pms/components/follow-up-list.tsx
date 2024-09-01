@@ -6,39 +6,21 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
-
-import {
-    FaThermometerHalf,
-    FaHeartbeat,
-    FaFillDrip,
-    FaClock
-} from "react-icons/fa";
-
-import Link from "next/link";
-
 interface FollowUpListProps {
     patientId: string;
 }
 
 import { getAllPatientFollowUpById } from "@/data/get-patient-info";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, PlusCircle } from "lucide-react";
 import FollowUpViewPage from "./follow-up-view";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const FollowUpListPage = async ({ patientId }: FollowUpListProps) => {
 
     const listOfFollowUps = await getAllPatientFollowUpById(patientId);
     return (
-        <div>
+        <div className="grid gap-4">
             <Accordion type="single" collapsible>
                 {listOfFollowUps.map((followUp) => (
                     <AccordionItem key={followUp.id} value={followUp.id}>
@@ -51,6 +33,15 @@ const FollowUpListPage = async ({ patientId }: FollowUpListProps) => {
                     </AccordionItem>
                 ))}
             </Accordion>
+            <Button
+            className="my-button-blue max-w-xs "
+            asChild
+            >
+                <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}&type=followUp`}>
+                <PlusCircle className="size-4 mr-2"/>
+                    Add Follow Up Record
+                </Link>
+            </Button>
         </div>
     )
 }

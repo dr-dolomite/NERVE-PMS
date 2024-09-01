@@ -61,7 +61,7 @@ export const savePatientHistory = async (values: z.infer<typeof PatientHistorySc
     });
 
     if (existingPatientHistory) {
-        return { error: "Patient history already exists" };
+        return { error: "Patient history already exists." };
     }
 
     const newPatientHistory = await db.patientHistory.create({

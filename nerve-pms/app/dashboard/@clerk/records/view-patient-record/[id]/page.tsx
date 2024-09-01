@@ -19,13 +19,23 @@ import {
     TabsTrigger
 } from "@/components/ui/tabs"
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
 import { Separator } from '@/components/ui/separator';
 import { Badge } from "@/components/ui/badge"
-import { BookText, IterationCw, UserCircle2, UserIcon } from 'lucide-react';
+import { BookText, EditIcon, IterationCw, UserCircle2, UserIcon } from 'lucide-react';
 import { getPatientById } from '@/data/get-patient-info';
 import PatientHistoryViewPage from '@/components/patient-history-view';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 import FollowUpListPage from '@/components/follow-up-list';
+import EditPatientInformationPage from '@/components/edit/edit-patient-information';
 
 const ViewPatientRecordPage = async ({ params }: { params: { id: string } }) => {
 
@@ -44,7 +54,6 @@ const ViewPatientRecordPage = async ({ params }: { params: { id: string } }) => 
     // Only parse the month, day, and year
     const lastVisitParsed = new Date(patient.lastVisit?.toString() ?? 'N/A');
     const nextVisitParsed = new Date(patient.lastVisit?.toString() ?? 'N/A');
-    const birthdayParsed = new Date(patient.birthday?.toString() ?? 'N/A');
 
     return (
         <Card className='p-8'>
@@ -140,7 +149,22 @@ const ViewPatientRecordPage = async ({ params }: { params: { id: string } }) => 
                                 <TabsContent value="about" className='p-2'>
                                     <div className='grid grid-cols-5'>
                                         <CardDescription className='uppercase col-span-5 my-6'>
-                                            Patient Information
+                                            <Dialog>
+                                                <DialogTrigger className='flex flex-row items-center '>
+                                                    Patient Information
+                                                    <EditIcon className='text-gray hover:text-[#2F80ED] cursor-pointer size-5 ml-3' />
+                                                </DialogTrigger>
+                                                <DialogContent className='2xl:max-w-[80%] max-w-[90%]'>
+                                                    <DialogHeader>
+                                                        <DialogTitle>Patient Information</DialogTitle>
+                                                        <DialogDescription>
+                                                            Update the patient&apos;s information here.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <EditPatientInformationPage patientId={patient.id} />
+                                                </DialogContent>
+                                            </Dialog>
+
                                         </CardDescription>
                                         <div className='mt-3 grid grid-cols-3 grid-flow-row gap-y-4 col-span-5'>
                                             <div className='col-span-1 font-semibold'>

@@ -88,15 +88,15 @@ export const PatientInformationSchema = z.object({
         message: 'Contact is required',
     }),
 
-    email: z.string().email({
-        message: 'Invalid email address',
-    }),
+    email: z.string().optional(),
 
     lastVisit: z.string().min(3, {
         message: 'Last visit is required',
     }),
 
     imageUrl : z.string().optional(),
+
+    id: z.string().optional(),
 });
 
 export const PatientVitalsSchema = z.object({

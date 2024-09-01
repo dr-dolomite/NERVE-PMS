@@ -116,8 +116,8 @@ model PatientInformation {
   occupation      String
   religion        String
   email           String?
-  phone           String?
-  lastVisit       DateTime?     @default(now())
+  phone           String
+  lastVisit       DateTime     @default(now())
   lastUpdate      DateTime
   imageURL        String?
 

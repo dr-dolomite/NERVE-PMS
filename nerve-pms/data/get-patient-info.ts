@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/lib/db";
 
 // fetch all patient information from the database but only the name, patient id, last update, and last visit
@@ -85,3 +87,66 @@ export const getPatientFollowUpById = async (id: string) => {
     return patientFollowUp;
 }
 
+export const getFollowUpPlanById = async (recordId: string) => {
+
+    // Check if the recordId corresponds to any FollowUpPlan followUpId
+    const followUp = await db.followUpPlan.findUnique({
+        where: {
+            followUpId: recordId
+        }
+    });
+
+    // Check if the recordId corresponds to any FollowUpPlan patientHistoryId
+    const followUpHistory = await db.followUpPlan.findUnique({
+        where: {
+            historyId: recordId
+        }
+    });
+
+    if (followUp) {
+        return followUp;
+    }
+
+    if (followUpHistory) {
+        return followUpHistory;
+    }
+}
+
+export const getPatientInformationOnlyById = async (id: string) => {
+    const patientInformation = await db.patientInformation.findUnique({
+        where: {
+            id
+        },
+        select: {
+            name: true,
+            city: true,
+            completeAddress: true,
+            phone: true,
+            email: true,
+            birthday: true,
+            age: true,
+            sex : true,
+            civilStatus: true,
+            occupation: true,
+            religion: true,
+            handedness: true,
+            lastVisit: true,
+            imageURL: true,
+            id: true,
+        }
+    });
+
+    return patientInformation;
+}
+
+export const searchPatientByName = async (name: string) => {
+    const patient = await db.patientInformation.findMany({
+        where: {
+            name: {
+                contains: name
+            }
+        }
+    });
+
+    return patient;
+}

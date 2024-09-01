@@ -47,6 +47,7 @@ const FollowUpPlanPage = () => {
     const searchParams = useSearchParams();
     const patientId = searchParams.get("patientId");
     const recordId = searchParams.get("id");
+    const showContent = success || error === "Follow-up plan already exists.";
 
     const form = useForm<z.infer<typeof FollowUpPlanSchema>>({
         defaultValues: {
@@ -144,7 +145,7 @@ const FollowUpPlanPage = () => {
                             </div>
 
                             <div className="flex flex-row gap-x-12 mt-4">
-                                {!success && (
+                                {!success && error != "Follow-up plan already exists." && (
                                     <Button
                                         type="submit"
                                         className="my-button-blue"
@@ -154,7 +155,7 @@ const FollowUpPlanPage = () => {
                                     </Button>
                                 )}
 
-                                {success && (
+                                {showContent && (
                                     <div className="grid grid-cols-1 grid-flow-row gap-8">
                                         <div className="max-w-sm flex flex-row items-center gap-x-6">
                                             <Button
@@ -173,6 +174,7 @@ const FollowUpPlanPage = () => {
                                                 type="button"
                                                 className="my-button-blue"
                                                 size="lg"
+                                                disabled
                                             >
                                                 Print The Plan
                                                 <PrinterIcon className="size-4 ml-2" />
@@ -187,9 +189,12 @@ const FollowUpPlanPage = () => {
                                                 type="button"
                                                 className="my-button-blue"
                                                 size="lg"
+                                                asChild
                                             >
-                                                Add Follow-up Record
-                                                <ArrowRight className="size-4 ml-2" />
+                                                <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}&type=followUp`}>
+                                                    Add Follow-up Record
+                                                    <ArrowRight className="size-4 ml-2" />
+                                                </Link>
                                             </Button>
                                         </div>
 

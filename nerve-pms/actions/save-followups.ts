@@ -45,7 +45,7 @@ export const savePatientFollowup = async (values: z.infer<typeof PatientFollowUp
     }
 
     // Save the follow-up record
-    await db.followUps.create({
+    const newPatientFollowUp = await db.followUps.create({
         data: {
             date: new Date(),
             labResults,
@@ -67,5 +67,5 @@ export const savePatientFollowup = async (values: z.infer<typeof PatientFollowUp
         }
     });
 
-    return { success: "Patient follow-up record saved." };
+    return { success: "Patient follow-up record saved.", followUpRecordId: newPatientFollowUp.id, planType: newPatientFollowUp.plan };
 };

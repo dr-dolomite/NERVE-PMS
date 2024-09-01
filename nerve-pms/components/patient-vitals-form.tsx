@@ -80,6 +80,7 @@ const PatientVitalsForm = () => {
         });
     };
 
+
     return (
         <Card>
             <CardHeader>
@@ -102,7 +103,7 @@ const PatientVitalsForm = () => {
                                             {...field}
                                             value={field.value || ''}
                                             onChange={(e) => field.onChange(Number(e.target.value))}
-                                            placeholder="0"
+                                            placeholder="bpm"
                                             disabled={!!isPending || !!success}
                                         />
                                     </FormControl>
@@ -122,7 +123,7 @@ const PatientVitalsForm = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder="0"
+                                            placeholder="°C"
                                             disabled={!!isPending || !!success}
                                         />
                                     </FormControl>
@@ -142,7 +143,7 @@ const PatientVitalsForm = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder="0"
+                                            placeholder="mmHg"
                                             disabled={!!isPending || !!success}
                                         />
                                     </FormControl>
@@ -162,7 +163,7 @@ const PatientVitalsForm = () => {
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder="0"
+                                            placeholder="kg"
                                             disabled={!!isPending || !!success}
                                         />
                                     </FormControl>
@@ -184,7 +185,7 @@ const PatientVitalsForm = () => {
                                             {...field}
                                             value={field.value || ''}
                                             onChange={(e) => field.onChange(Number(e.target.value))}
-                                            placeholder="0"
+                                            placeholder="%"
                                             disabled={!!isPending || !!success}
                                         />
                                     </FormControl>

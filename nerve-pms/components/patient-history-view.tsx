@@ -22,10 +22,13 @@ import {
     FaClock
 } from "react-icons/fa";
 import { Separator } from "./ui/separator";
+import PlanDetailsPage from "./plan-notes";
 
 const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps) => {
     const patientHist = await getPatientHistoryById(patientId);
     const patientVitals = await getPatientVitalsById(patientHist?.vitalSignsid ? patientHist?.vitalSignsid : "");
+    const patientPlan = patientHist?.plan;
+    const historyRecordId = patientHist?.id;
 
     return (
         <div className="grid grid-cols-2 grid-flow-row p-4 gap-8">
@@ -120,7 +123,7 @@ const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps
             <Separator className="col-span-2" />
 
             <div className="col-span-2 grid 2xl:grid-cols-3 grid-cols-2 grid-flow-row gap-6 gap-x-12">
-                <div className="col-span-1 flex flex-col gap-2">
+                <div className="2xl:col-span-2 col-span-1 flex flex-col gap-2">
                     <div className="flex shrink-0">
                         <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
                             Chief Complaint:
@@ -142,18 +145,13 @@ const PatientHistoryViewPage = async ({ patientId }: PatientHistoryViewPageProps
                         {patientHist?.referredBy}
                     </p>
                 </div>
-
-                <div className="col-span-1 flex flex-col gap-2">
-                    <div className="flex shrink-0">
-                        <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
-                            Plan
-                        </Label>
-                    </div>
-                    <p className="text-wrap uppercase">
-                        {patientHist?.plan}
-                    </p>
-                </div>
             </div>
+            <Separator className="col-span-2 mt-4" />
+            
+            <div className="col-span-2">
+                <PlanDetailsPage plan={patientPlan || ""} recordId={historyRecordId || ""} />
+            </div>
+
             <Separator className="col-span-2 mt-4" />
             <div className="col-span-2 flex flex-col gap-2 ">
                 <div className="flex shrink-0">

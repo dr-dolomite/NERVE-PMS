@@ -50,6 +50,7 @@ const PatientInformationForm = () => {
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
     const [patientId, setPatientId] = useState<string>("");
+    const [buttonState, setButtonState] = useState<boolean>(false);
 
     /* For S3 Image Upload */
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -80,14 +81,13 @@ const PatientInformationForm = () => {
 
     const uploadToS3 = async (file: File): Promise<string> => {
         try {
-
-            console.log('Requesting presigned URL for:', file.name);
+            setButtonState(true);
             const response = await fetch(`/api/presigned?fileName=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type)}`);
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Presigned URL response:', response.status, errorText);
                 throw new Error(`Failed to get presigned URL: ${response.statusText}`);
+                setButtonState(false);
             }
 
             const { signedUrl } = await response.json();
@@ -110,7 +110,8 @@ const PatientInformationForm = () => {
             // Return the URL of the uploaded image
             return signedUrl.split('?')[0]; // Return the URL without the query string
         } catch (error) {
-            console.error('Error uploading to S3:', error);
+            setError("Failed to upload image.");
+            setButtonState(false);
             throw error;
         }
     };
@@ -137,6 +138,8 @@ const PatientInformationForm = () => {
     });
 
     const onSubmit = async (values: z.infer<typeof PatientInformationSchema>) => {
+        console.log("Form values:", values);
+        console.log("I was clicked");
         try {
             if (selectedFile) {
                 const imageUrl = await uploadToS3(selectedFile);
@@ -152,12 +155,14 @@ const PatientInformationForm = () => {
                         if (data?.error) {
                             form.reset();
                             setError(data.error);
+                            setButtonState(false);
                         }
 
                         if (data?.success) {
                             form.reset();
                             setSuccess(data.success);
                             setPatientId(data.patientId);
+                            setButtonState(false);
                         }
                     })
                     .catch(() => {
@@ -505,7 +510,7 @@ const PatientInformationForm = () => {
                                         type="submit"
                                         size="lg"
                                         className="my-button-blue"
-                                        disabled={isPending}>
+                                        disabled={isPending || buttonState}>
                                         Save Patient Information
                                     </Button>
                                 )}

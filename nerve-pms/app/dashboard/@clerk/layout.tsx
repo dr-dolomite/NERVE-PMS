@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import Link from "next/link";
 import {
@@ -58,7 +58,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
                         <nav className="grid items-start lg:space-y-2 px-2 lg:py-6 py-2 text-lg font-medium lg:px-4">
                             <Link
                                 href="/dashboard/home"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname == "/dashboard/home" ||
+                                className={`flex items-center gap-3 rounded-lg antialiased px-3 py-2 transition-all ${pathname == "/dashboard/home" ||
                                         pathname == "/dashboard/add-existing-user" ||
                                         pathname == "/dashboard/add-new-user" ||
                                         pathname == "/dashboard/add-patient-history" ||
@@ -72,7 +72,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
                             <Link
                                 href="/dashboard/records"
-                                className={`flex items-center gap-3 rounded-lg antialiased px-3 lg:py-3 py-2 transition-all ${pathname.startsWith("/dashboard/records") ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
+                                className={`flex items-center gap-3 rounded-lg antialiased px-3 py-2 transition-all ${pathname.startsWith("/dashboard/records") ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white" : "text-primary`"}`}
                             >
                                 <FileText className="h-5 w-5" />
                                 Records

@@ -20,6 +20,8 @@ import {
     FaFillDrip,
     FaClock
 } from "react-icons/fa";
+import { Separator } from "./ui/separator";
+import PlanDetailsPage from "./plan-notes";
 
 interface FollowUpViewProps {
     followUpId: string;
@@ -30,11 +32,13 @@ const FollowUpViewPage = async ({ vitalsId, followUpId }: FollowUpViewProps) => 
 
     const patientVitals = await getPatientVitalsById(vitalsId);
     const patientFollowUp = await getPatientFollowUpById(followUpId);
+    const patientPlan = patientFollowUp?.plan;
+    const followUpRecordId = patientFollowUp?.id;
 
     return (
         <div className="grid grid-cols-2 grid-flow-row gap-6 gap-y-8 p-4">
             <div className="col-span-2">
-                <Card className="p-4 grid grid-cols-3 grid-flow-row gap-6">
+                <Card className="p-4 grid grid-cols-3 grid-flow-row gap-6 drop-shadow-md">
                     <div className="flex flex-row 2xl:gap-x-6 gap-x-4 items-center">
                         <h1 className="font-medium">
                             Blood Pressure
@@ -105,8 +109,8 @@ const FollowUpViewPage = async ({ vitalsId, followUpId }: FollowUpViewProps) => 
             <div className="col-span-2">
                 <div className="grid grid-cols-3 grid-flow-row gap-6 ">
                     {/* Left Side */}
-                    <div className="col-span-1">
-                        <Card className="col-span-1 flex flex-col gap-2 p-4">
+                    <div className="col-span-1 flex flex-row gap-x-4">
+                        <Card className="col-span-1 flex flex-col gap-2 p-4 drop-shadow-md">
                             <div className="flex shrink-0">
                                 <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
                                     Laboratory Result
@@ -116,11 +120,12 @@ const FollowUpViewPage = async ({ vitalsId, followUpId }: FollowUpViewProps) => 
                                 {patientFollowUp?.labResults}
                             </p>
                         </Card>
+                        <Separator orientation="vertical"/>
                     </div>
 
                     {/* Right Side */}
                     <div className="col-span-2 grid grid-cols-2 grid-flow-row gap-6">
-                        <Card className="col-span-1 flex flex-col gap-2 p-4">
+                        <Card className="col-span-1 flex flex-col gap-2 p-4 drop-shadow-md">
                             <div className="flex shrink-0">
                                 <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
                                     S/O
@@ -131,7 +136,7 @@ const FollowUpViewPage = async ({ vitalsId, followUpId }: FollowUpViewProps) => 
                             </p>
                         </Card>
 
-                        <Card className="col-span-1 flex flex-col gap-2 p-4">
+                        <Card className="col-span-1 flex flex-col gap-2 p-4 drop-shadow-md">
                             <div className="flex shrink-0">
                                 <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
                                     Diagnosis
@@ -142,7 +147,7 @@ const FollowUpViewPage = async ({ vitalsId, followUpId }: FollowUpViewProps) => 
                             </p>
                         </Card>
 
-                        <Card className="col-span-1 flex flex-col gap-2 p-4">
+                        <Card className="col-span-1 flex flex-col gap-2 p-4 drop-shadow-md">
                             <div className="flex shrink-0">
                                 <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
                                     Treatment Plan
@@ -152,19 +157,12 @@ const FollowUpViewPage = async ({ vitalsId, followUpId }: FollowUpViewProps) => 
                                 {patientFollowUp?.treatment}
                             </p>
                         </Card>
-
-                        <Card className="col-span-1 flex flex-col gap-2 p-4">
-                            <div className="flex shrink-0">
-                                <Label className="font-semibold bg-[#2F80ED] p-3 text-white">
-                                    Plan
-                                </Label>
-                            </div>
-                            <p className="text-wrap">
-                                {patientFollowUp?.plan}
-                            </p>
-                        </Card>
                     </div>
                 </div>
+            </div>
+            <Separator className="col-span-2" />
+            <div className="col-span-2">
+                <PlanDetailsPage plan={patientPlan || ""} recordId={followUpRecordId || ""} />
             </div>
         </div>
     )

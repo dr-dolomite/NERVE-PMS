@@ -35,33 +35,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/form";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { savePatientFollowup } from "@/actions/save-followups";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, CirclePlus } from "lucide-react";
+import { ArrowRight, Check, CirclePlus, PrinterIcon } from "lucide-react";
 
 const PatientFollowupForm = () => {
 
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [planType, setPlanType] = useState<string | undefined>("");
+  const [followUpRecordId, setFollowUpRecordId] = useState<string>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const patientId = searchParams.get("patientId");
@@ -97,7 +88,8 @@ const PatientFollowupForm = () => {
           if (data?.success) {
             form.reset();
             setSuccess(data.success);
-            // setvitalSignsId(data.vitalSignsId);
+            setFollowUpRecordId(data.followUpRecordId);
+            setPlanType(data.planType);
           }
         })
         .catch(() => {
@@ -116,7 +108,7 @@ const PatientFollowupForm = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form className="grid grid-cols-2 gap-6" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="grid grid-cols-2 grid-flow-row gap-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="col-span-1">
               <FormField
                 control={form.control}
@@ -152,6 +144,7 @@ const PatientFollowupForm = () => {
                       <Textarea
                         {...field}
                         placeholder="S/O"
+                        className="h-32"
                         disabled={!!isPending || !!success}
                       />
                     </FormControl>
@@ -174,6 +167,7 @@ const PatientFollowupForm = () => {
                       <Textarea
                         {...field}
                         placeholder="Lab Results"
+                        className="h-32"
                         disabled={!!isPending || !!success}
                       />
                     </FormControl>
@@ -196,6 +190,7 @@ const PatientFollowupForm = () => {
                       <Textarea
                         {...field}
                         placeholder="Diagnosis"
+                        className="h-32"
                         disabled={!!isPending || !!success}
                       />
                     </FormControl>
@@ -218,6 +213,7 @@ const PatientFollowupForm = () => {
                       <Textarea
                         {...field}
                         placeholder="Treatment"
+                        className="h-32"
                         disabled={!!isPending || !!success}
                       />
                     </FormControl>
@@ -227,7 +223,7 @@ const PatientFollowupForm = () => {
               />
             </div>
 
-            <div className="col-span-2">
+            <div className="max-w-sm">
               <FormField
                 control={form.control}
                 name="plan"
@@ -237,11 +233,20 @@ const PatientFollowupForm = () => {
                       Plan
                     </FormLabel>
                     <FormControl>
-                      <Textarea
-                        {...field}
-                        placeholder="Plan"
-                        disabled={!!isPending || !!success}
-                      />
+                      <Select disabled={!!isPending || !!success} onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose Plan" />
+                        </SelectTrigger>
+                        <SelectContent
+                        >
+                          <SelectGroup>
+                            <SelectItem value="follow-up">Follow Up</SelectItem>
+                            <SelectItem value="opd">OPD</SelectItem>
+                            <SelectItem value="admit">Admit</SelectItem>
+                            <SelectItem value="referral">Referred To</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -249,49 +254,64 @@ const PatientFollowupForm = () => {
               />
             </div>
 
+
             <div className="flex flex-col mt-4 col-span-2 gap-y-4">
               <div className="text-center">
                 <FormError message={error} />
                 <FormSuccess message={success} />
               </div>
 
-              <div className="flex flex-row gap-x-12 mt-4">
-                {!success && (
+              <div className="flex flex-row 2xl:gap-x-12 gap-x-8 mt-4">
+                {!success && error !== "Patient history already exists" && (
                   <Button
                     type="submit"
                     className="my-button-blue"
                     size="lg"
                     disabled={isPending}>
-                    Save Patient Follow-up
+                    Save Patient Folow-up
                   </Button>
                 )}
 
                 {success && (
-                  <div className="flex flex-row items-center 2xl:gap-x-12 gap-x-8 mt-4">
+                  <Button
+                    type="button"
+                    asChild
+                    className="my-button-blue"
+                    size="lg"
+                  >
+                    <Link href={`/dashboard/add-plan/${planType}?patientId=${patientId}&id=${followUpRecordId}`}>
+                      Add Patient Plan Information
+                      <ArrowRight className="size-4 ml-2" />
+                    </Link>
+                  </Button>
+                )}
+
+                {error === "Patient history already exists" && (
+                  <>
                     <Button
                       type="button"
+                      asChild
                       className="my-button-blue"
                       size="lg"
-                      asChild
                     >
-                      <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}&type=followUp`} >
-                      <CirclePlus className="size-4 mr-2"/>
-                        Add Another Follow-up
+                      <Link href={`/dashboard/add-patient-vitals?patientId=${patientId}`}>
+                        Add Patient Follow-up
                       </Link>
                     </Button>
 
                     <Button
                       type="button"
+                      asChild
                       className="my-button-gray"
                       size="lg"
-                      asChild
                     >
                       <Link href="/dashboard/home">
                         Go Back
                       </Link>
                     </Button>
-                  </div>
-                )}
+                  </>
+                )
+                }
               </div>
             </div>
           </form>

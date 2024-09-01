@@ -67,7 +67,7 @@ export const saveFollowUpPlan = async (values: z.infer<typeof FollowUpPlanSchema
     });
 
     if (existingPlan) {
-        return { error: "Follow-up plan already exists" };
+        return { error: "Follow-up plan already exists." };
     }
 
     // Save the follow-up plan

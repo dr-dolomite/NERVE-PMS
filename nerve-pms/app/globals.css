@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    /* @apply bg-background text-foreground; */
+    @apply text-foreground;
+    background-color: #eefcfd;
+  }
+}
+
+.text-gray {
+  --text-opacity: 1;
+  color: #999999;
+  color: rgba(113, 128, 150, var(--text-opacity));
+}
+
+.text-dark-blue {
+  --text-opacity: 1;
+  color: #0e313e;
+  color: rgba(14, 49, 62, var(--text-opacity));
+}
+
+.background-pink {
+  background-color: #fc6c85;
+}
+
+/* For blue gradient button */
+@layer utilities {
+  @property --blueColor1 {
+    syntax: "<color>";
+    initial-value: #2F80ED;
+    inherits: false;
+  }
+
+  @property --blueColor2 {
+    syntax: "<color>";
+    initial-value: #37C9D9;
+    inherits: false;
+  }
+
+  .my-button-blue {
+    background: linear-gradient(var(--blueColor1), var(--blueColor2));
+    transition: --blueColor1 0.5s ease-in-out, --blueColor2 0.5s ease-in-out;
+  }
+
+  .my-button-blue:hover {
+    --blueColor1: #37C9D9;
+    --blueColor2: #2F80ED;
+  }
+}
+
+/* For gray gradient button */
+@layer utilities {
+  @property --grayColor1 {
+    syntax: "<color>";
+    initial-value: #4e4e4e;
+    inherits: false;
+  }
+
+  @property --grayColor2 {
+    syntax: "<color>";
+    initial-value: #999999;
+    inherits: false;
+  }
+
+  .my-button-gray {
+    background: linear-gradient(var(--grayColor1), var(--grayColor2));
+    transition: --grayColor1 0.5s ease-in-out, --grayColor2 0.5s ease-in-out;
+  }
+
+  .my-button-gray:hover {
+    --grayColor1: #999999;
+    --grayColor2: #4e4e4e;
+  }
+}
+
+/* For red gradient button */
+@layer utilities {
+  @property --redColor1 {
+    syntax: "<color>";
+    initial-value: #FF4B2B;
+    inherits: false;
+  }
+
+  @property --redColor2 {
+    syntax: "<color>";
+    initial-value: #FF416C;
+    inherits: false;
+  }
+
+  .my-button-red {
+    background: linear-gradient(var(--redColor1), var(--redColor2));
+    transition: --redColor1 0.5s ease-in-out, --redColor2 0.5s ease-in-out;
+  }
+
+  .my-button-red:hover {
+    --redColor1: #FF416C;
+    --redColor2: #FF4B2B;
+  }
+}

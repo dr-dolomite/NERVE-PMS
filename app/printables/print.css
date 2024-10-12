@@ -1,0 +1,29 @@
+/* styles/print.css */
+@media print {
+    @page {
+      size: 210mm 297mm; /* A4 size */
+      margin: 20mm;
+    }
+  
+    /* Ensure header and footer repeat on each printed page */
+    header, footer {
+      position: running(header-footer);
+    }
+  
+    /* Create space for the header and footer */
+    body {
+      margin-top: 50mm; /* Adjust according to header size */
+      margin-bottom: 50mm; /* Adjust according to footer size */
+    }
+  
+    /* Handle page breaks inside the main content */
+    main {
+      break-after: auto;
+    }
+  
+    /* Optional: Prevent page breaks inside certain sections */
+    .patient-info {
+      break-inside: avoid;
+    }
+  }
+  

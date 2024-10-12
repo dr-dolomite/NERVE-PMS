@@ -150,21 +150,23 @@ export const Prescription = React.forwardRef<HTMLDivElement>((props, ref) => {
             flexDirection: "column",
           }}
         >
-          <div style={{ textAlign: "left" }}>
-            <p style={{ fontSize: "10pt", margin: "0" }}>
-              EMMYLOU JANE C. BAYLOSIS-VALENCIA, M.D.
-            </p>
-          </div>
-          <div style={{ textAlign: "left" }}>
-            <p style={{ fontSize: "10pt", margin: "0" }}>
-              Lic No: <span style={{ fontWeight: "bold" }}> 102582</span>
-            </p>
-          </div>
-          <div style={{ textAlign: "left" }}>
-            <p style={{ fontSize: "10pt", margin: "0" }}>PTR No:</p>
-          </div>
-          <div style={{ textAlign: "left" }}>
-            <p style={{ fontSize: "10pt", margin: "0" }}>S2 No:</p>
+          <div>
+            <div style={{ textAlign: "left" }}>
+              <p style={{ fontSize: "10pt", margin: "0" }}>
+                EMMYLOU JANE C. BAYLOSIS-VALENCIA, M.D.
+              </p>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <p style={{ fontSize: "10pt", margin: "0" }}>
+                Lic No: <span style={{ fontWeight: "bold" }}> 102582</span>
+              </p>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <p style={{ fontSize: "10pt", margin: "0" }}>PTR No:</p>
+            </div>
+            <div style={{ textAlign: "left" }}>
+              <p style={{ fontSize: "10pt", margin: "0" }}>S2 No:</p>
+            </div>
           </div>
         </div>
       </div>
